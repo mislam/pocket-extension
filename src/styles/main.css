@@ -22,6 +22,7 @@ textarea {
 html,
 body {
    min-width: 360px;
+   min-height: 540px;
    @apply bg-slate-800 text-slate-100;
 }
 
