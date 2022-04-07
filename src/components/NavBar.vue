@@ -17,7 +17,7 @@ const closeMenu = () => {
 
 const lockWallet = async () => {
    await store.dispatch('lock')
-   router.push({ name: 'Login' })
+   router.push({ name: 'Unlock' })
    closeMenu()
 }
 </script>

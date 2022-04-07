@@ -17,15 +17,15 @@ router.beforeEach((to, from, next) => {
    else if (to.name === 'CreatePassword' && store.state.passwordHash !== null) {
       next(from) // go back to where you came from
    }
-   // non-login route and locked
-   else if (to.name !== 'Login' && store.state.locked) {
-      next({ name: 'Login' })
+   // non-unlock route and locked
+   else if (to.name !== 'Unlock' && store.state.locked) {
+      next({ name: 'Unlock' })
    }
-   // login route and unlocked
-   else if (to.name === 'Login' && !store.state.locked) {
+   // unlock route and unlocked
+   else if (to.name === 'Unlock' && !store.state.locked) {
       next({ name: 'Dashboard' })
    }
-   // login route and locked, or non-login route and unlocked
+   // unlock route and locked, or non-unlock route and unlocked
    else {
       next()
    }
