@@ -1,12 +1,12 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import wallet from '@/modules/wallet'
 
 const router = useRouter()
-const pwinput = ref(null)
-const pwconfirm = ref(null)
-const error = ref(false)
+const pwinput = ref<any>(null)
+const pwconfirm = ref<any>(null)
+const error = ref<any>(false)
 
 onMounted(() => {
    // autofocus on the input field

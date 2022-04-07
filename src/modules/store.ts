@@ -1,12 +1,15 @@
 import { createStore } from 'vuex'
 import storage from '@/modules/storage'
 
-const store = createStore({
-   state() {
-      return {
-         locked: true,
-         passwordHash: null,
-      }
+interface State {
+   locked: boolean
+   passwordHash: string | null
+}
+
+export default createStore<State>({
+   state: {
+      locked: true,
+      passwordHash: null,
    },
    mutations: {
       lock(state, locked) {
@@ -17,8 +20,8 @@ const store = createStore({
       },
    },
    actions: {
-      async init({ commit }) {
-         await storage.init()
+      async init({ commit, state }) {
+         await storage.init(state)
          commit('lock', storage.get('locked'))
          commit('setPasswordHash', storage.get('passwordHash'))
       },
@@ -36,5 +39,3 @@ const store = createStore({
       },
    },
 })
-
-export default store

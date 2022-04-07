@@ -1,7 +1,10 @@
 import sha256 from 'crypto-js/sha256'
 import store from '@/modules/store'
 
-const validatePassword = (password, confirmPassword) => {
+const validatePassword = (
+   password: string,
+   confirmPassword: string,
+): { error: string | boolean } => {
    if (password !== confirmPassword) {
       return {
          error: "Passwords don't match",
@@ -23,13 +26,13 @@ const validatePassword = (password, confirmPassword) => {
    }
 }
 
-const createPassword = async (password) => {
+const createPassword = async (password: string) => {
    const passwordHash = sha256(password).toString()
    await store.dispatch('setPasswordHash', passwordHash)
    await store.dispatch('unlock')
 }
 
-const unlock = async (password) => {
+const unlock = async (password: string): Promise<{ error: string | boolean }> => {
    const passwordHash = sha256(password).toString()
    if (passwordHash !== store.state.passwordHash) {
       return {

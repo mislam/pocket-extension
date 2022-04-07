@@ -11,7 +11,14 @@ export default defineConfig({
       emptyOutDir: true,
       rollupOptions: {
          input: {
-            popup: resolve(__dirname, 'src/popup.html'),
+            main: resolve(__dirname, 'src/popup.html'),
+         },
+         output: {
+            manualChunks(id) {
+               if (id.includes('node_modules')) {
+                  return 'vendor'
+               }
+            },
          },
       },
    },

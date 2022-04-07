@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { Router, createRouter, createWebHashHistory } from 'vue-router'
 
 import CreatePassword from '@/pages/CreatePassword.vue'
 import Unlock from '@/pages/Unlock.vue'
@@ -23,7 +23,7 @@ const routes = [
    },
 ]
 
-const router = createRouter({
+const router: Router = createRouter({
    history: createWebHashHistory(),
    routes,
 })
