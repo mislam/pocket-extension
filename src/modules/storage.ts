@@ -1,10 +1,11 @@
-import { encrypt, decrypt } from '@/modules/encryptor'
+import { encrypt, decrypt, sha256 } from '@/modules/encryptor'
 
 let data = new Map<string, any>()
-const encryptionKey = 'k3!G5]c#w(8;v@E{q.L%p:m7,f^k)4?g'
-const storageKey = '_'
+let encryptionKey = '' // this is going to be populated in init()
+const storageKey = '_' // the key to be used in the key-value pair in storage
 
 const init = async (state: object) => {
+   encryptionKey = await sha256(import.meta.env.VITE_STORAGE_ENCRYPTION_KEY)
    data = new Map(Object.entries(state))
    let encryptedData
    if ('storage' in chrome) {

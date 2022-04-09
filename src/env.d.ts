@@ -3,7 +3,7 @@
 const chrome = window.chrome
 
 interface ImportMetaEnv {
-   readonly VITE_DISPATCHERS: string
+   readonly VITE_STORAGE_ENCRYPTION_KEY: string
 }
 
 interface ImportMeta {
