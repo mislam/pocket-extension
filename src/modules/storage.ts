@@ -1,5 +1,4 @@
-import AES from 'crypto-js/aes'
-import Utf8 from 'crypto-js/enc-utf8'
+import { encrypt, decrypt } from '@/modules/encryptor'
 
 let data = new Map<string, any>()
 const encryptionKey = 'k3!G5]c#w(8;v@E{q.L%p:m7,f^k)4?g'
@@ -20,7 +19,7 @@ const init = async (state: object) => {
       }
       encryptedData = window.localStorage[storageKey]
    }
-   data = _decrypt(encryptedData)
+   data = await _decrypt(encryptedData)
 }
 
 const set = async (key: string, value: any) => {
@@ -32,18 +31,16 @@ const get = (key: string) => {
    return data.get(key)
 }
 
-const _encrypt = (data: Map<string, any>) => {
-   return AES.encrypt(JSON.stringify(Object.fromEntries(data)), encryptionKey).toString()
+const _encrypt = async (data: Map<string, any>) => {
+   return await encrypt(encryptionKey, Object.fromEntries(data))
 }
 
-const _decrypt = (encryptedData: string) => {
-   return new Map(
-      Object.entries(JSON.parse(AES.decrypt(encryptedData, encryptionKey).toString(Utf8))),
-   )
+const _decrypt = async (encryptedData: string) => {
+   return new Map(Object.entries(await decrypt(encryptionKey, encryptedData)))
 }
 
 const _persist = async () => {
-   const encryptedData = _encrypt(data)
+   const encryptedData = await _encrypt(data)
    if ('storage' in chrome) {
       await chrome.storage.local.set({
          [storageKey]: encryptedData,

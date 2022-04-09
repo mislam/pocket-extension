@@ -1,4 +1,4 @@
-import sha256 from 'crypto-js/sha256'
+import { sha256 } from '@/modules/encryptor'
 import store from '@/modules/store'
 
 const validatePassword = (
@@ -27,13 +27,13 @@ const validatePassword = (
 }
 
 const createPassword = async (password: string) => {
-   const passwordHash = sha256(password).toString()
+   const passwordHash = await sha256(password)
    await store.dispatch('setPasswordHash', passwordHash)
    await store.dispatch('unlock')
 }
 
 const unlock = async (password: string): Promise<{ error: string | boolean }> => {
-   const passwordHash = sha256(password).toString()
+   const passwordHash = await sha256(password)
    if (passwordHash !== store.state.passwordHash) {
       return {
          error: 'Incorrect password',
