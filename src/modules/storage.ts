@@ -32,12 +32,30 @@ const get = (key: string) => {
    return data.get(key)
 }
 
-const _encrypt = async (data: Map<string, any>) => {
-   return await encrypt(encryptionKey, Object.fromEntries(data))
+/**
+ * Encrypt the data on production environment, but keep it readable on dev environment.
+ * @param {Map<string, any>} data Data to be encrypted
+ * @returns {string} Encrypted data
+ */
+const _encrypt = async (data: Map<string, any>): Promise<string> => {
+   if (import.meta.env.DEV) {
+      return JSON.stringify(Object.fromEntries(data))
+   } else {
+      return await encrypt(encryptionKey, Object.fromEntries(data))
+   }
 }
 
-const _decrypt = async (encryptedData: string) => {
-   return new Map(Object.entries(await decrypt(encryptionKey, encryptedData)))
+/**
+ * Decrypt the encrypted data on production environment, but just pass it thru in dev environment.
+ * @param {string} encryptedData Encrypted data to be decrypted
+ * @returns {Map<string, any>} Decrypted data
+ */
+const _decrypt = async (encryptedData: string): Promise<Map<string, any>> => {
+   if (import.meta.env.DEV) {
+      return new Map(Object.entries(JSON.parse(encryptedData)))
+   } else {
+      return new Map(Object.entries(await decrypt(encryptionKey, encryptedData)))
+   }
 }
 
 const _persist = async () => {
