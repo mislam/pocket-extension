@@ -12,7 +12,7 @@
       "skipLibCheck": true,
       "esModuleInterop": true,
       "lib": ["esnext", "dom"],
-      "paths": { "@/*": ["./src/*"] }
+      "paths": { "@/*": ["./src/*"], "@pocketjs/*": ["./packages/pocketjs/*"] }
    },
    "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
    "references": [{ "path": "./tsconfig.node.json" }]

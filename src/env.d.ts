@@ -4,6 +4,7 @@ const chrome = window.chrome
 
 interface ImportMetaEnv {
    readonly VITE_STORAGE_ENCRYPTION_KEY: string
+   readonly VITE_RPC_URL: string
 }
 
 interface ImportMeta {

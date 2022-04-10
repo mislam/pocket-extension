@@ -1,3 +1,5 @@
+import { IsomorphicProvider } from '@pocketjs/provider'
+import { KeyManager } from '@pocketjs/signer'
 import { sha256 } from '@/modules/encryptor'
 import store from '@/modules/store'
 
@@ -45,8 +47,21 @@ const unlock = async (password: string): Promise<{ error: string | boolean }> =>
    }
 }
 
+const createAccount = async () => {
+   return (await KeyManager.createRandom()).getAccount()
+}
+
+const getBalance = async (address: string): Promise<BigInt> => {
+   const rpcUrl = import.meta.env.VITE_RPC_URL
+   const provider = new IsomorphicProvider({ rpcUrl })
+   const balance = await provider.getBalance(address)
+   return balance
+}
+
 export default {
    validatePassword,
    createPassword,
    unlock,
+   createAccount,
+   getBalance,
 }

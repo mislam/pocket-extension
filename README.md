@@ -18,6 +18,12 @@ npm install
 
 # Develop
 
+Make a copy of `.env` file from `.env.example`:
+
+```
+cp .env.example .env
+```
+
 ```
 npm run dev
 ```
