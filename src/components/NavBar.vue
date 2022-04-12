@@ -1,11 +1,28 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 
 const store = useStore()
 const router = useRouter()
 const menu = ref(false)
+
+const finishedOnboarding = computed(() => {
+   // when there is an wallet and the password is also set
+   return store.state.wallets.length > 0 && !!store.state.passwordHash
+})
+
+const unlocked = computed(() => {
+   return !store.state.locked
+})
+
+const selectedWallet = computed(() => {
+   const wallet = store.state.selectedWallet
+   return {
+      name: wallet.name,
+      shortAddress: wallet.address.slice(0, 4).toUpperCase() + '...' + wallet.address.slice(-4).toUpperCase(),
+   }
+})
 
 const toggleMenu = () => {
    menu.value = !menu.value
@@ -23,43 +40,52 @@ const lockWallet = async () => {
 </script>
 
 <template>
-   <div class="flex h-12 bg-slate-900/20">
-      <div @click="toggleMenu" class="flex-none w-12 h-12 p-3.5">
-         <svg width="20" height="20" viewBox="0 0 20 20" class="fill fill-slate-500 transition-colors hover:cursor-pointer hover:fill-slate-300" xmlns="http://www.w3.org/2000/svg">
-            <rect y="3" width="20" height="2" />
-            <rect y="15" width="20" height="2" />
-            <rect y="9" width="20" height="2" />
-         </svg>
-      </div>
-      <div class="grow flex justify-center items-center text-xl font-semibold text-slate-500">Pocket</div>
-      <div class="flex-none w-12 h-12"></div>
-   </div>
-   <Transition name="slide-fade">
-      <div v-if="menu" class="flex absolute top-0 w-full h-full max-w-sm">
-         <div class="grow bg-slate-900 h-full">
-            <div class="flex h-12 border-b border-b-slate-800">
-               <div class="grow flex items-center pl-3.5 text-xl font-semibold text-slate-500">Pocket</div>
-               <div @click="closeMenu" class="flex-none w-12 h-12 p-3.5">
-                  <svg width="20" height="20" viewBox="0 0 20 20" class="fill fill-slate-500 transition-colors hover:cursor-pointer hover:fill-slate-300" xmlns="http://www.w3.org/2000/svg">
-                     <rect x="9" y="0.1" width="2" height="19.8" rx="1" transform="translate(-4.14 10) rotate(-45)" />
-                     <rect x="0.1" y="9" width="19.8" height="2" rx="1" transform="translate(-4.14 10) rotate(-45)" />
-                  </svg>
-               </div>
-            </div>
-            <div class="p-3.5 text-slate-300 text-lg">
-               <div v-if="!store.state.locked" @click="lockWallet" class="flex items-center transition-colors hover:cursor-pointer hover:text-blue-500">
-                  <div class="mr-2">
-                     <svg width="20" height="20" viewBox="0 0 20 20" class="fill fill-current" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M15,8A5,5,0,0,0,5,8H3v9H17V8ZM10,5a3,3,0,0,1,3,3H7A3,3,0,0,1,10,5Z" />
-                     </svg>
-                  </div>
-                  <div>Lock Wallet</div>
-               </div>
+   <div v-if="finishedOnboarding && unlocked">
+      <div class="flex h-12 bg-slate-900/20">
+         <div class="flex-none w-12 h-12">
+            <div @click="toggleMenu" class="w-full h-full p-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300">
+               <svg width="20" height="20" viewBox="0 0 20 20" class="fill-current transition-colors" xmlns="http://www.w3.org/2000/svg">
+                  <rect y="3" width="20" height="2" />
+                  <rect y="15" width="20" height="2" />
+                  <rect y="9" width="20" height="2" />
+               </svg>
             </div>
          </div>
-         <div @click="closeMenu" class="w-24"></div>
+         <div class="grow flex justify-center items-center">
+            <span class="text-white/90">{{ selectedWallet.name }}</span>
+            <span class="text-white/60 pl-2">({{ selectedWallet.shortAddress }})</span>
+         </div>
+         <div class="flex-none w-12 h-12"></div>
       </div>
-   </Transition>
+      <Transition name="slide-fade">
+         <div v-if="menu" class="flex absolute top-0 w-full h-full max-w-sm">
+            <div class="grow bg-slate-900 h-full">
+               <div class="flex h-12 border-b border-b-slate-800">
+                  <div class="grow flex items-center pl-3.5 text-xl font-semibold text-slate-500">Pocket</div>
+                  <div @click="closeMenu" class="flex-none w-12 h-12 p-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300">
+                     <div>
+                        <svg width="20" height="20" viewBox="0 0 20 20" class="fill-current transition-colors" xmlns="http://www.w3.org/2000/svg">
+                           <rect x="9" y="0.1" width="2" height="19.8" rx="1" transform="translate(-4.14 10) rotate(-45)" />
+                           <rect x="0.1" y="9" width="19.8" height="2" rx="1" transform="translate(-4.14 10) rotate(-45)" />
+                        </svg>
+                     </div>
+                  </div>
+               </div>
+               <div class="p-3.5 text-slate-300 text-lg">
+                  <div v-if="!store.state.locked" @click="lockWallet" class="flex items-center transition-colors hover:cursor-pointer hover:text-blue-500">
+                     <div class="mr-2">
+                        <svg width="20" height="20" viewBox="0 0 20 20" class="fill fill-current" xmlns="http://www.w3.org/2000/svg">
+                           <path d="M15,8A5,5,0,0,0,5,8H3v9H17V8ZM10,5a3,3,0,0,1,3,3H7A3,3,0,0,1,10,5Z" />
+                        </svg>
+                     </div>
+                     <div>Lock Wallet</div>
+                  </div>
+               </div>
+            </div>
+            <div @click="closeMenu" class="w-24"></div>
+         </div>
+      </Transition>
+   </div>
 </template>
 
 <style scoped>

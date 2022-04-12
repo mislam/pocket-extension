@@ -9,16 +9,17 @@ const init = async (state: object) => {
    data = new Map(Object.entries(state))
    let encryptedData
    if ('storage' in chrome) {
-      const obj = await chrome.storage.local.get(storageKey)
+      let obj = await chrome.storage.local.get(storageKey)
       if (!obj.hasOwnProperty(storageKey)) {
-         return
+         await _persist()
+         obj = await chrome.storage.local.get(storageKey)
       }
       encryptedData = obj[storageKey]
    } else {
-      if (!window.localStorage.hasOwnProperty(storageKey)) {
-         return
+      if (!window.localStorage.getItem(storageKey)) {
+         await _persist()
       }
-      encryptedData = window.localStorage[storageKey]
+      encryptedData = window.localStorage.getItem(storageKey)
    }
    data = await _decrypt(encryptedData)
 }
@@ -28,8 +29,9 @@ const set = async (key: string, value: any) => {
    await _persist()
 }
 
-const get = (key: string) => {
-   return data.get(key)
+const get = (key: string, defaultValue?: any) => {
+   const value = data.get(key)
+   return value !== undefined ? value : defaultValue
 }
 
 /**

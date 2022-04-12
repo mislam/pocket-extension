@@ -7,7 +7,7 @@ import {
    GetNodesOptions,
    Node,
    TransactionResponse,
-} from './types'
+} from '../types'
 
 export abstract class AbstractProvider {
    // Account
