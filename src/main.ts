@@ -7,6 +7,7 @@ import '@/modules/error-handlers'
 import '@/styles/main.css'
 
 const el = document.createElement('div')
+el.classList.add('app')
 document.body.appendChild(el)
 const app = createApp(Popup)
 

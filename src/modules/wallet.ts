@@ -13,14 +13,24 @@ const validatePassword = (
    password: string,
    confirmPassword: string,
 ): { error: string | boolean } => {
+   if (password.length === 0) {
+      return {
+         error: 'Password cannot be empty.',
+      }
+   }
+   if (confirmPassword.length === 0) {
+      return {
+         error: 'Please re-enter your password to confirm.',
+      }
+   }
    if (password !== confirmPassword) {
       return {
-         error: "Passwords don't match",
+         error: 'Make sure you enter the same password in both fields.',
       }
    }
    if (password.length < 8) {
       return {
-         error: 'Password must be at least 8 characters long',
+         error: 'Please set a longer password that is at least eight characters or more.',
       }
    }
    const regexp = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})')
@@ -73,10 +83,10 @@ const createNew = async () => {
 const importFromPrivateKey = async (privateKey: string) => {
    const wallet = (await KeyManager.fromPrivateKey(privateKey)).getAccount()
    if (!validateWallet(wallet)) {
-      throw new Error('You entered an invalid private key')
+      throw new Error('You entered an invalid private key.')
    }
    if (walletExist(wallet)) {
-      throw new Error('You already have this wallet')
+      throw new Error('You already have this wallet.')
    }
    await storeEncryptedWallet(wallet)
 }

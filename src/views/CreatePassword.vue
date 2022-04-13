@@ -25,7 +25,7 @@ const create = async () => {
 </script>
 
 <template>
-   <div class="m-5">
+   <div class="view flex flex-col">
       <div class="flex justify-center mb-5 text-3xl leading-none">
          <div class="logo-circle">
             <svg width="96" height="96" viewBox="0 0 96 96" class="-translate-y-1" xmlns="http://www.w3.org/2000/svg">
@@ -36,7 +36,7 @@ const create = async () => {
       </div>
       <div class="flex justify-center mb-3 text-heading">Create a password</div>
       <div class="flex justify-center mb-5 text-subheading text-center">You will use it to unlock your secure wallet.</div>
-      <form @submit.prevent="create">
+      <form class="grow flex flex-col" @submit.prevent="create">
          <div class="mb-3">
             <input class="block w-full" type="password" ref="passwordInput" placeholder="Password" />
          </div>
@@ -44,6 +44,7 @@ const create = async () => {
             <input class="block w-full" type="password" ref="passwordConfirmInput" placeholder="Confirm Password" />
          </div>
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
+         <div class="grow"></div>
          <button class="primary w-full mt-5">Create</button>
       </form>
    </div>

@@ -24,7 +24,7 @@ const unlock = async () => {
 </script>
 
 <template>
-   <div class="m-5">
+   <div class="view">
       <div class="flex justify-center mb-5 text-3xl leading-none">
          <div class="logo-circle">
             <svg width="96" height="96" viewBox="0 0 96 96" class="-translate-y-1" xmlns="http://www.w3.org/2000/svg">
@@ -34,9 +34,10 @@ const unlock = async () => {
          </div>
       </div>
       <div class="flex justify-center mb-5 text-xl leading-none">Enter Password to Unlock</div>
-      <form @submit.prevent="unlock">
+      <form class="grow flex flex-col" @submit.prevent="unlock">
          <div><input class="block w-full" :class="{ 'form-error-input': error }" type="password" ref="passwordInput" placeholder="Password" /></div>
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
+         <div class="grow"></div>
          <button class="primary w-full mt-5">Unlock</button>
       </form>
    </div>

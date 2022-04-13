@@ -10,20 +10,9 @@
    user-select: none;
 }
 
-input,
-textarea {
-   -webkit-touch-callout: default;
-   -webkit-user-select: text;
-   -moz-user-select: text;
-   -ms-user-select: text;
-   user-select: text;
-}
-
 html,
 body {
-   min-width: 360px;
-   min-height: 540px;
-   @apply bg-slate-800 text-slate-100;
+   @apply flex bg-slate-800 text-slate-100;
 }
 
 body {
@@ -32,6 +21,15 @@ body {
 
 label {
    @apply text-slate-300 text-sm;
+}
+
+input,
+textarea {
+   -webkit-touch-callout: default;
+   -webkit-user-select: text;
+   -moz-user-select: text;
+   -ms-user-select: text;
+   user-select: text;
 }
 
 input,
@@ -100,6 +98,16 @@ button.primary:disabled {
 
 .text-subheading {
    @apply text-white/60 text-base;
+}
+
+.app {
+   @apply flex flex-col;
+   width: 360px;
+   height: 540px;
+}
+
+.view {
+   @apply grow flex flex-col m-5;
 }
 
 .logo-circle {
