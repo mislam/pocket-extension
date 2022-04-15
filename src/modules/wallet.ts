@@ -120,7 +120,7 @@ const storeEncryptedWallet = async (wallet: Wallet) => {
    })
 }
 
-const getBalance = async (address: string): Promise<BigInt> => {
+const getBalance = async (address: string): Promise<bigint> => {
    const rpcUrl = import.meta.env.VITE_RPC_URL
    const provider = new IsomorphicProvider({ rpcUrl })
    const balance = await provider.getBalance(address)
