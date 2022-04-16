@@ -1,11 +1,11 @@
 import { encrypt, decrypt, sha256 } from '@/modules/encryptor'
 
 let data = new Map<string, any>()
-let encryptionKey = '' // this is going to be populated in init()
+let encryptionPassword = '' // this is going to be populated in init()
 const storageKey = '_' // the key to be used in the key-value pair in storage
 
 const init = async (state: object) => {
-   encryptionKey = await sha256(import.meta.env.VITE_STORAGE_ENCRYPTION_KEY)
+   encryptionPassword = await sha256(import.meta.env.VITE_STORAGE_ENCRYPTION_KEY)
    data = new Map(Object.entries(state))
    let encryptedData
    if ('storage' in chrome) {
@@ -43,7 +43,7 @@ const _encrypt = async (data: Map<string, any>): Promise<string> => {
    if (import.meta.env.DEV) {
       return JSON.stringify(Object.fromEntries(data))
    } else {
-      return await encrypt(encryptionKey, Object.fromEntries(data))
+      return await encrypt(encryptionPassword, Object.fromEntries(data))
    }
 }
 
@@ -56,7 +56,7 @@ const _decrypt = async (encryptedData: string): Promise<Map<string, any>> => {
    if (import.meta.env.DEV) {
       return new Map(Object.entries(JSON.parse(encryptedData)))
    } else {
-      return new Map(Object.entries(await decrypt(encryptionKey, encryptedData)))
+      return new Map(Object.entries(await decrypt(encryptionPassword, encryptedData)))
    }
 }
 

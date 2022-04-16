@@ -1,4 +1,4 @@
-import { Router, createRouter, createWebHashHistory } from 'vue-router'
+import { Router, createRouter, createWebHashHistory, RouteLocationRaw } from 'vue-router'
 import store from '@/modules/store'
 
 import Onboarding from '@/views/Onboarding.vue'
@@ -8,25 +8,38 @@ import Dashboard from '@/views/Dashboard.vue'
 
 const routes = [
    {
-      path: '/onboarding',
-      name: 'Onboarding',
-      component: Onboarding,
-   },
-   {
       path: '/create-password',
       name: 'CreatePassword',
       component: CreatePassword,
    },
    {
+      path: '/onboarding',
+      name: 'Onboarding',
+      component: Onboarding,
+      meta: { requiresPassword: true },
+      beforeEnter: (to: RouteLocationRaw, from: RouteLocationRaw) => {
+         // if wallet has been already created/imported
+         if (store.state.wallets.length > 0) {
+            router.push(from) // go back to where you came from
+         }
+      },
+   },
+   {
       path: '/unlock',
       name: 'Unlock',
       component: Unlock,
+      props: true,
+      beforeEnter: () => {
+         // if already unlocked and has encryptedPassword
+         if (!store.state.locked && store.state.encryptedPassword) {
+            router.push({ name: 'Dashboard' }) // go to dashboard
+         }
+      },
    },
    {
       path: '/',
       name: 'Dashboard',
       component: Dashboard,
-      requiresAuth: true,
    },
 ]
 
@@ -35,42 +48,35 @@ const router: Router = createRouter({
    routes,
 })
 
-router.beforeEach((to, from, next) => {
-   // if password is not set yet
+router.beforeEach((to, from) => {
+   // if password is not set yet, go to create password
    if (!store.state.passwordHash) {
       if (to.name !== 'CreatePassword') {
-         next({ name: 'CreatePassword' })
-      } else {
-         next()
+         return { name: 'CreatePassword' }
       }
    }
-   // create-password route and password is already set
-   else if (to.name === 'CreatePassword' && !!store.state.passwordHash) {
-      next(from) // go back to where you came from
+   // if password is set and routing to the unlock route, do nothing
+   else if (to.name === 'Unlock') {
+      return true
    }
-   // if no wallet has been created/imported yet
+   // if the route requires password and the encryptedPassword is empty, go to unlock
+   else if (to.meta.requiresPassword && !store.state.encryptedPassword) {
+      return {
+         name: 'Unlock',
+         params: {
+            prompt: 'Enter password to proceed',
+         },
+      }
+   }
+   // if no wallet has been created/imported yet, go to onboarding
    else if (store.state.wallets.length === 0) {
       if (to.name !== 'Onboarding') {
-         next({ name: 'Onboarding' })
-      } else {
-         next()
+         return { name: 'Onboarding' }
       }
    }
-   // onboarding route and wallet has been already created/imported
-   else if (to.name === 'Onboarding' && store.state.wallets.length > 0) {
-      next(from) // go back to where you came from
-   }
-   // non-unlock route and locked
-   else if (to.name !== 'Unlock' && store.state.locked) {
-      next({ name: 'Unlock' })
-   }
-   // unlock route and unlocked
-   else if (to.name === 'Unlock' && !store.state.locked) {
-      next({ name: 'Dashboard' })
-   }
-   // unlock route and locked, or non-unlock route and unlocked
-   else {
-      next()
+   // if locked, go to unlock
+   else if (store.state.locked) {
+      return { name: 'Unlock' }
    }
 })
 

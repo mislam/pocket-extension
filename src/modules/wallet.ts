@@ -1,8 +1,9 @@
 import { IsomorphicProvider } from '@pocketjs/provider'
 import { KeyManager } from '@pocketjs/signer'
-import { encrypt, sha256 } from '@/modules/encryptor'
+import { decrypt, encrypt, sha256 } from '@/modules/encryptor'
 import store from '@/modules/store'
 
+const encryptionPassword = await sha256(import.meta.env.VITE_STORAGE_ENCRYPTION_KEY)
 interface Wallet {
    address: string
    publicKey: string
@@ -46,8 +47,14 @@ const validatePassword = (
 
 const createPassword = async (password: string) => {
    const passwordHash = await sha256(password)
+   store.commit('setEncryptedPassword', await encrypt(encryptionPassword, password))
    await store.dispatch('setPasswordHash', passwordHash)
    await store.dispatch('unlock')
+}
+
+const lock = async () => {
+   store.commit('setEncryptedPassword', '')
+   await store.dispatch('lock')
 }
 
 const unlock = async (password: string): Promise<{ error: string | boolean }> => {
@@ -63,6 +70,7 @@ const unlock = async (password: string): Promise<{ error: string | boolean }> =>
          error: 'Incorrect password',
       }
    }
+   store.commit('setEncryptedPassword', await encrypt(encryptionPassword, password))
    await store.dispatch('unlock')
    return {
       error: false,
@@ -77,7 +85,9 @@ const createNew = async () => {
    if (walletExist(wallet)) {
       throw new Error('You already have this wallet')
    }
-   await storeEncryptedWallet(wallet)
+   if (!(await storeEncryptedWallet(wallet))) {
+      throw new Error('Could not store wallet')
+   }
 }
 
 const importFromPrivateKey = async (privateKey: string) => {
@@ -88,7 +98,9 @@ const importFromPrivateKey = async (privateKey: string) => {
    if (walletExist(wallet)) {
       throw new Error('You already have this wallet.')
    }
-   await storeEncryptedWallet(wallet)
+   if (!(await storeEncryptedWallet(wallet))) {
+      throw new Error('Could not store wallet')
+   }
 }
 
 const validateWallet = (wallet: Wallet) => {
@@ -109,15 +121,20 @@ const walletExist = (wallet: Wallet) => {
 }
 
 /**
- * Encrypt the private key with the hash of the user defined password
+ * Encrypt the private key with the user defined password
  * and store the wallet with its address and the encrypted private key.
  * @param {Wallet} wallet
  */
-const storeEncryptedWallet = async (wallet: Wallet) => {
+const storeEncryptedWallet = async (wallet: Wallet): Promise<boolean> => {
+   if (!store.state.encryptedPassword) {
+      return false
+   }
+   const password: string = await decrypt(encryptionPassword, store.state.encryptedPassword)
    await store.dispatch('addWallet', {
       address: wallet.address,
-      encryptedPrivateKey: await encrypt(store.state.passwordHash, wallet.privateKey),
+      encryptedPrivateKey: await encrypt(password, wallet.privateKey),
    })
+   return true
 }
 
 const getBalance = async (address: string): Promise<bigint> => {
@@ -130,6 +147,7 @@ const getBalance = async (address: string): Promise<bigint> => {
 export default {
    validatePassword,
    createPassword,
+   lock,
    unlock,
    createNew,
    importFromPrivateKey,

@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Wallet from '@/modules/wallet'
 
 const router = useRouter()
 const passwordInput = ref<any>(null)
 const error = ref<any>(false)
+
+const props = defineProps({
+   prompt: String,
+})
+
+const prompt = computed(() => {
+   return props.prompt || 'Enter password to unlock'
+})
 
 onMounted(() => {
    // autofocus on the input field
@@ -16,6 +24,8 @@ const unlock = async () => {
    const unlock = await Wallet.unlock(passwordInput.value.value)
    error.value = unlock.error
    if (unlock.error) {
+      passwordInput.value.focus() // focus on the input
+      passwordInput.value.select() // and select the text
       return
    }
    passwordInput.value.value = '' // clear password field
@@ -33,7 +43,7 @@ const unlock = async () => {
             </svg>
          </div>
       </div>
-      <div class="flex justify-center mb-5 text-xl leading-none">Enter Password to Unlock</div>
+      <div class="flex justify-center mb-5 text-xl leading-none">{{ prompt }}</div>
       <form class="grow flex flex-col" @submit.prevent="unlock">
          <div><input class="block w-full" :class="{ 'form-error-input': error }" type="password" ref="passwordInput" placeholder="Password" /></div>
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>

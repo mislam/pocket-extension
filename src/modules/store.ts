@@ -1,14 +1,15 @@
 import { createStore } from 'vuex'
-import storage from '@/modules/storage'
+import Storage from '@/modules/storage'
 
 interface Wallet {
    name: string // A meaningful name set by the user
    address: string // Wallet address
-   encryptedPrivateKey: string // Encrypted private key with the hash of the user defined password
+   encryptedPrivateKey: string // Private key is encrypted with the user defined password
 }
 
 interface State {
    locked: boolean
+   encryptedPassword?: string
    passwordHash: string
    wallets: Wallet[]
    selectedWallet?: Wallet
@@ -24,6 +25,9 @@ export default createStore<State>({
       lock(state, locked) {
          state.locked = locked
       },
+      setEncryptedPassword(state, encryptedPassword) {
+         state.encryptedPassword = encryptedPassword
+      },
       setPasswordHash(state, hash) {
          state.passwordHash = hash
       },
@@ -36,23 +40,23 @@ export default createStore<State>({
    },
    actions: {
       async init({ commit, state }) {
-         await storage.init(state)
-         commit('lock', storage.get('locked'))
-         commit('setPasswordHash', storage.get('passwordHash'))
-         commit('setWallets', storage.get('wallets'))
-         commit('setSelectedWallet', storage.get('selectedWallet'))
+         await Storage.init(state)
+         commit('lock', Storage.get('locked'))
+         commit('setPasswordHash', Storage.get('passwordHash'))
+         commit('setWallets', Storage.get('wallets'))
+         commit('setSelectedWallet', Storage.get('selectedWallet'))
       },
       async lock({ commit }) {
          commit('lock', true)
-         await storage.set('locked', true)
+         await Storage.set('locked', true)
       },
       async unlock({ commit }) {
          commit('lock', false)
-         await storage.set('locked', false)
+         await Storage.set('locked', false)
       },
       async setPasswordHash({ commit }, hash) {
          commit('setPasswordHash', hash)
-         await storage.set('passwordHash', hash)
+         await Storage.set('passwordHash', hash)
       },
       async addWallet({ commit, state }, wallet: Wallet) {
          const wallets = JSON.parse(JSON.stringify(state.wallets)) // clone
@@ -60,8 +64,8 @@ export default createStore<State>({
          wallet.name = `Wallet ${wallets.length}`
          commit('setWallets', wallets)
          commit('setSelectedWallet', wallet)
-         await storage.set('wallets', wallets)
-         await storage.set('selectedWallet', wallet)
+         await Storage.set('wallets', wallets)
+         await Storage.set('selectedWallet', wallet)
       },
    },
 })

@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import Wallet from '@/modules/wallet'
 
 const store = useStore()
 const router = useRouter()
@@ -13,7 +14,7 @@ const finishedOnboarding = computed(() => {
 })
 
 const unlocked = computed(() => {
-   return !store.state.locked
+   return !store.state.locked && 'Unlock' !== router.currentRoute.value.name
 })
 
 const selectedWallet = computed(() => {
@@ -33,7 +34,7 @@ const closeMenu = () => {
 }
 
 const lockWallet = async () => {
-   await store.dispatch('lock')
+   await Wallet.lock()
    router.push({ name: 'Unlock' })
    closeMenu()
 }
