@@ -77,6 +77,7 @@ export class IsomorphicProvider implements AbstractProvider {
          method: 'POST',
          signal: controller.signal as AbortSignal,
          headers: {
+            Accept: 'application/json',
             'Content-Type': 'application/json',
          },
          body: JSON.stringify(body),
@@ -106,6 +107,7 @@ export class IsomorphicProvider implements AbstractProvider {
       const res = await this.perform({
          route: V1RpcRoutes.QueryBalance,
          body: { address: await address },
+         retryAttempts: 3,
       })
       const { balance } = await res.json()
       return BigInt(balance)

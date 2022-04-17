@@ -1,13 +1,20 @@
 import { IsomorphicProvider } from '@pocketjs/provider'
 import { KeyManager } from '@pocketjs/signer'
+import Config from '@/modules/config'
+import Cache from '@/modules/cache'
 import { decrypt, encrypt, sha256 } from '@/modules/encryptor'
 import store from '@/modules/store'
 
-const encryptionPassword = await sha256(import.meta.env.VITE_STORAGE_ENCRYPTION_KEY)
+let encryptionPassword = ''
+
 interface Wallet {
    address: string
    publicKey: string
    privateKey: string
+}
+
+const init = async () => {
+   encryptionPassword = await sha256(Config.STORAGE_ENCRYPTION_KEY)
 }
 
 const validatePassword = (
@@ -137,14 +144,25 @@ const storeEncryptedWallet = async (wallet: Wallet): Promise<boolean> => {
    return true
 }
 
-const getBalance = async (address: string): Promise<bigint> => {
-   const rpcUrl = import.meta.env.VITE_RPC_URL
+const getBalance = async (address: string): Promise<number> => {
+   const rpcUrl = Config.RPC_URL
    const provider = new IsomorphicProvider({ rpcUrl })
-   const balance = await provider.getBalance(address)
-   return balance
+   const balance = Cache.get(`balance:${address}`)
+   if (balance !== undefined) return balance
+   return provider.getBalance(address).then(
+      async (bigBalance) => {
+         const balance = Number(bigBalance) // convert bigint to number
+         await Cache.set(`balance:${address}`, balance, Config.BALANCE_TTL)
+         return Promise.resolve(balance)
+      },
+      () => {
+         return Promise.reject()
+      },
+   )
 }
 
 export default {
+   init,
    validatePassword,
    createPassword,
    lock,

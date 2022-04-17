@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import Storage from '@/modules/storage'
+import Wallet from '@/modules/wallet'
 
 interface Wallet {
    name: string // A meaningful name set by the user
@@ -41,6 +42,7 @@ export default createStore<State>({
    actions: {
       async init({ commit, state }) {
          await Storage.init(state)
+         await Wallet.init()
          commit('lock', Storage.get('locked'))
          commit('setPasswordHash', Storage.get('passwordHash'))
          commit('setWallets', Storage.get('wallets'))

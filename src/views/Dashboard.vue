@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { useStore } from 'vuex'
+import Config from '@/modules/config'
+import Cache from '@/modules/cache'
 import Wallet from '@/modules/wallet'
 import { reactive } from 'vue'
 
 const store = useStore()
 const balance = reactive({
+   available: false,
    pokt: 0,
    usd: 0,
 })
@@ -15,20 +18,27 @@ const currency = (value: number): string => {
    return value.toLocaleString(navigator.language, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-Wallet.getBalance(wallet.address).then((uPokt: bigint) => {
-   balance.pokt = Number(uPokt / BigInt(10000)) / 100
-   if (balance.pokt) {
-      fetch(import.meta.env.VITE_PRICE_URL).then(async (response) => {
-         const price = (await response.json()).price
-         balance.usd = balance.pokt * price
-      })
-   }
-})
+Wallet.getBalance(wallet.address).then(
+   // success
+   (uPokt) => {
+      balance.pokt = Number(uPokt / 1e4) / 1e2 // convert uPokt to Pokt with two decimal points
+      balance.available = true
+      if (balance) {
+         Cache.fetch(Config.PRICE_URL, Config.PRICE_TTL).then((data) => {
+            balance.usd = balance.pokt * data.price
+         })
+      }
+   },
+   // failure
+   () => {
+      balance.available = false
+   },
+)
 </script>
 
 <template>
    <div class="view">
-      <div>
+      <div v-if="balance.available">
          <div class="flex justify-center items-center">
             <span class="text-3xl leading-none">{{ currency(balance.pokt) }}</span>
             <span class="ml-1 leading-none">POKT</span>

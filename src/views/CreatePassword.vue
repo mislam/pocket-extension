@@ -38,10 +38,10 @@ const create = async () => {
       <div class="flex justify-center mb-5 text-subheading text-center">You will use it to unlock your secure wallet.</div>
       <form class="grow flex flex-col" @submit.prevent="create">
          <div class="mb-3">
-            <input class="block w-full" type="password" ref="passwordInput" placeholder="Password" />
+            <input class="block w-full" type="password" ref="passwordInput" placeholder="Password" autocomplete="new-password" />
          </div>
          <div>
-            <input class="block w-full" type="password" ref="passwordConfirmInput" placeholder="Confirm Password" />
+            <input class="block w-full" type="password" ref="passwordConfirmInput" placeholder="Confirm Password" autocomplete="new-password" />
          </div>
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
          <div class="grow"></div>
