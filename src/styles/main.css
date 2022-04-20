@@ -107,10 +107,31 @@ button.primary:disabled {
 }
 
 .view {
-   @apply grow flex flex-col m-5;
+   @apply grow flex flex-col p-5 mb-14 overflow-auto;
+}
+
+.view.without-footer {
+   @apply mb-0;
 }
 
 .logo-circle {
    @apply rounded-full bg-black/20 p-5;
    box-shadow: inset 0 10px 15px 0 rgb(0 0 0 / 0.25);
+}
+
+.tabs {
+   @apply flex justify-between absolute bottom-0 w-full bg-slate-700 px-4;
+   box-shadow: 0 -10px 10px 0px rgb(0 0 0 / 0.15);
+}
+
+.tabs-item {
+   @apply px-4 py-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300;
+}
+
+.tabs-item.active {
+   @apply border-y-2 border-slate-300 border-b-transparent text-slate-300;
+}
+
+.tabs-item svg {
+   @apply fill-current transition-colors;
 }

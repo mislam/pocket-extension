@@ -5,6 +5,8 @@ import Onboarding from '@/views/Onboarding.vue'
 import CreatePassword from '@/views/CreatePassword.vue'
 import Unlock from '@/views/Unlock.vue'
 import Dashboard from '@/views/Dashboard.vue'
+import History from '@/views/History.vue'
+import Settings from '@/views/Settings.vue'
 
 const routes = [
    {
@@ -40,6 +42,16 @@ const routes = [
       path: '/',
       name: 'Dashboard',
       component: Dashboard,
+   },
+   {
+      path: '/history',
+      name: 'History',
+      component: History,
+   },
+   {
+      path: '/settings',
+      name: 'Settings',
+      component: Settings,
    },
 ]
 

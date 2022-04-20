@@ -25,7 +25,7 @@ const create = async () => {
 </script>
 
 <template>
-   <div class="view flex flex-col">
+   <div class="view without-footer flex flex-col">
       <div class="flex justify-center mb-5 text-3xl leading-none">
          <div class="logo-circle">
             <svg width="96" height="96" viewBox="0 0 96 96" class="-translate-y-1" xmlns="http://www.w3.org/2000/svg">
