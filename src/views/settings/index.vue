@@ -4,11 +4,7 @@ import { useStore } from 'vuex'
 
 const store = useStore()
 const selectedWallet = computed(() => {
-   const wallet = store.state.selectedWallet
-   return {
-      name: wallet.name,
-      shortAddress: wallet.address.slice(0, 4).toUpperCase() + '...' + wallet.address.slice(-4).toUpperCase(),
-   }
+   return store.state.selectedWallet
 })
 </script>
 
@@ -33,8 +29,8 @@ const selectedWallet = computed(() => {
          </router-link>
       </div>
       <div class="mt-5 grid gap-3">
-         <button class="primary w-full">Export Private Key</button>
-         <button class="danger w-full">Remove Wallet</button>
+         <router-link to="/settings/private-key" class="btn primary w-full">Reveal Private Key</router-link>
+         <router-link to="/settings/remove-wallet" class="btn danger w-full">Remove Wallet</router-link>
       </div>
    </div>
 </template>

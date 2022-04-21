@@ -10,7 +10,6 @@ interface Wallet {
 
 interface State {
    locked: boolean
-   encryptedPassword?: string
    passwordHash: string
    wallets: Wallet[]
    selectedWallet?: Wallet
@@ -25,9 +24,6 @@ export default createStore<State>({
    mutations: {
       lock(state, locked) {
          state.locked = locked
-      },
-      setEncryptedPassword(state, encryptedPassword) {
-         state.encryptedPassword = encryptedPassword
       },
       setPasswordHash(state, hash) {
          state.passwordHash = hash

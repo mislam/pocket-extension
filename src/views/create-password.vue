@@ -4,8 +4,9 @@ import { useRouter } from 'vue-router'
 import Wallet from '@/modules/wallet'
 
 const router = useRouter()
+const password = ref<string>('')
+const passwordConfirm = ref<string>('')
 const passwordInput = ref<any>(null)
-const passwordConfirmInput = ref<any>(null)
 const error = ref<boolean | string>(false)
 
 onMounted(() => {
@@ -14,13 +15,14 @@ onMounted(() => {
 })
 
 const create = async () => {
-   const validation = Wallet.validatePassword(passwordInput.value.value, passwordConfirmInput.value.value)
+   const validation = Wallet.validatePassword(password.value, passwordConfirm.value)
    error.value = validation.error
    if (validation.error) {
       return
    }
-   await Wallet.createPassword(passwordInput.value.value)
-   router.push({ name: 'Dashboard' })
+   await Wallet.createPassword(password.value)
+   const encryptedPassword = await Wallet.encryptPassword(password.value)
+   router.push({ name: '/onboarding', params: { ep: encryptedPassword } })
 }
 </script>
 
@@ -37,15 +39,16 @@ const create = async () => {
       <div class="flex justify-center mb-3 text-heading">Create a password</div>
       <div class="flex justify-center mb-5 text-subheading text-center">You will use it to unlock your secure wallet.</div>
       <form class="grow flex flex-col" @submit.prevent="create">
+         <input class="hidden" type="text" autocomplete="username" />
          <div class="mb-3">
-            <input class="block w-full" type="password" ref="passwordInput" placeholder="Password" autocomplete="new-password" />
+            <input class="block w-full" type="password" v-model="password" ref="passwordInput" placeholder="Password" autocomplete="new-password" />
          </div>
          <div>
-            <input class="block w-full" type="password" ref="passwordConfirmInput" placeholder="Confirm Password" autocomplete="new-password" />
+            <input class="block w-full" type="password" v-model="passwordConfirm" placeholder="Confirm Password" autocomplete="new-password" />
          </div>
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
          <div class="grow"></div>
-         <button class="primary w-full mt-5">Create</button>
+         <button class="btn primary w-full mt-5" :disabled="!password || !passwordConfirm">Create</button>
       </form>
    </div>
 </template>

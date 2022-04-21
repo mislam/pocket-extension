@@ -56,44 +56,56 @@ input[type='password']::placeholder {
    @apply text-base -translate-y-1.5;
 }
 
-button {
-   @apply px-4 py-2 bg-slate-700 bg-gradient-to-b from-slate-600/50 text-slate-100 text-lg font-semibold rounded-md shadow;
+.btn {
+   @apply px-4 py-2 bg-slate-700 bg-gradient-to-b from-slate-600/50 text-white/90 text-lg text-center font-semibold rounded-md shadow cursor-pointer;
+   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-button:hover {
+.btn.small {
+   @apply px-3 py-1 text-sm;
+}
+
+.btn.oval {
+   @apply rounded-full;
+}
+
+.btn:hover {
    @apply bg-slate-700/75;
 }
 
-button:active {
-   @apply bg-gradient-to-t indent-px;
+.btn:active {
+   @apply bg-gradient-to-t;
 }
 
-button:disabled {
-   @apply indent-0 bg-slate-700 bg-gradient-to-b opacity-50 text-slate-400;
+.btn:disabled,
+.btn.disabled {
+   @apply bg-slate-700 bg-gradient-to-b opacity-50 text-white/50 cursor-auto;
 }
 
-button.primary {
-   @apply bg-blue-700 from-blue-600/50 text-blue-100;
+.btn.primary {
+   @apply bg-blue-700 from-blue-600/50;
 }
 
-button.primary:hover {
+.btn.primary:hover {
    @apply bg-blue-700/75;
 }
 
-button.primary:disabled {
-   @apply bg-blue-700 text-blue-400;
+.btn.primary:disabled,
+.btn.primary.disabled {
+   @apply bg-blue-700;
 }
 
-button.danger {
-   @apply bg-red-700 from-red-600/50 text-red-100;
+.btn.danger {
+   @apply bg-red-700 from-red-600/50;
 }
 
-button.danger:hover {
+.btn.danger:hover {
    @apply bg-red-700/75;
 }
 
-button.danger:disabled {
-   @apply bg-red-700 text-red-400;
+.btn.danger:disabled,
+.btn.danger.disabled {
+   @apply bg-red-700;
 }
 
 .form-error-input {
@@ -174,4 +186,16 @@ ul.tabs li svg {
    width: 9px;
    height: 15px;
    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 15'%3E%3Cpath d='M8.71,6.79h0L2.34.43A1,1,0,0,0,.93,1.84L6.59,7.5.93,13.16a1,1,0,0,0,1.41,1.41L8.7,8.21h0a1,1,0,0,0,0-1.42Z'/%3E%3C/svg%3E");
+}
+
+.alert {
+   @apply px-4 py-3 rounded-md border;
+}
+
+.alert.warning {
+   @apply bg-yellow-500/30 border-yellow-500/60;
+}
+
+.alert.danger {
+   @apply bg-red-500/30 border-red-500/60;
 }

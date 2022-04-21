@@ -4,11 +4,13 @@ import { useRouter } from 'vue-router'
 import Wallet from '@/modules/wallet'
 
 const router = useRouter()
+const password = ref<string>('')
 const passwordInput = ref<any>(null)
 const error = ref<any>(false)
 
 const props = defineProps({
    prompt: String,
+   returnTo: String,
 })
 
 const prompt = computed(() => {
@@ -21,15 +23,22 @@ onMounted(() => {
 })
 
 const unlock = async () => {
-   const unlock = await Wallet.unlock(passwordInput.value.value)
+   const unlock = await Wallet.unlock(password.value)
    error.value = unlock.error
    if (unlock.error) {
       passwordInput.value.focus() // focus on the input
       passwordInput.value.select() // and select the text
       return
    }
-   passwordInput.value.value = '' // clear password field
-   router.push({ name: 'Dashboard' })
+
+   const encryptedPassword = await Wallet.encryptPassword(password.value)
+   password.value = '' // clear password field
+
+   if (props.returnTo) {
+      router.push({ name: props.returnTo, params: { ep: encryptedPassword } })
+   } else {
+      router.push('/dashboard')
+   }
 }
 </script>
 
@@ -45,10 +54,10 @@ const unlock = async () => {
       </div>
       <div class="flex justify-center mb-5 text-xl leading-none">{{ prompt }}</div>
       <form class="grow flex flex-col" @submit.prevent="unlock">
-         <div><input class="block w-full" :class="{ 'form-error-input': error }" type="password" ref="passwordInput" placeholder="Password" /></div>
+         <div><input class="block w-full" :class="{ 'form-error-input': error }" type="password" v-model="password" ref="passwordInput" placeholder="Password" autocomplete="" /></div>
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
          <div class="grow"></div>
-         <button class="primary w-full mt-5">Unlock</button>
+         <button class="btn primary w-full mt-5" :disabled="!password">Unlock</button>
       </form>
    </div>
 </template>
