@@ -84,6 +84,18 @@ button.primary:disabled {
    @apply bg-blue-700 text-blue-400;
 }
 
+button.danger {
+   @apply bg-red-700 from-red-600/50 text-red-100;
+}
+
+button.danger:hover {
+   @apply bg-red-700/75;
+}
+
+button.danger:disabled {
+   @apply bg-red-700 text-red-400;
+}
+
 .form-error-input {
    @apply outline outline-red-500 outline-offset-0;
 }
@@ -119,19 +131,47 @@ button.primary:disabled {
    box-shadow: inset 0 10px 15px 0 rgb(0 0 0 / 0.25);
 }
 
-.tabs {
+ul.tabs {
    @apply flex justify-between absolute bottom-0 w-full bg-slate-700 px-4;
    box-shadow: 0 -10px 10px 0px rgb(0 0 0 / 0.15);
 }
 
-.tabs-item {
-   @apply px-4 py-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300;
+ul.tabs li {
+   @apply block px-4 py-3.5 border-y-2 border-transparent text-slate-500 hover:cursor-pointer hover:text-slate-300;
 }
 
-.tabs-item.active {
-   @apply border-y-2 border-slate-300 border-b-transparent text-slate-300;
+ul.tabs li.active {
+   @apply border-t-slate-300 text-slate-300;
 }
 
-.tabs-item svg {
+ul.tabs li svg {
    @apply fill-current transition-colors;
+}
+
+.pills {
+   @apply grid gap-3;
+}
+
+.pills a {
+   @apply flex items-center bg-slate-700 rounded-md p-4;
+}
+
+.pills dl {
+   @apply grow;
+}
+
+.pills dt {
+   @apply font-semibold;
+}
+
+.pills dd {
+   @apply text-sm text-slate-400;
+}
+
+.pills a:after {
+   @apply block bg-slate-400;
+   content: '';
+   width: 9px;
+   height: 15px;
+   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 9 15'%3E%3Cpath d='M8.71,6.79h0L2.34.43A1,1,0,0,0,.93,1.84L6.59,7.5.93,13.16a1,1,0,0,0,1.41,1.41L8.7,8.21h0a1,1,0,0,0,0-1.42Z'/%3E%3C/svg%3E");
 }
