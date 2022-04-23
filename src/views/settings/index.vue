@@ -29,7 +29,7 @@ const selectedWallet = computed(() => {
          </router-link>
       </div>
       <div class="mt-5 grid gap-3">
-         <router-link to="/settings/private-key" class="btn primary w-full">Reveal Private Key</router-link>
+         <router-link to="/settings/private-key" class="btn primary w-full">Show Private Key</router-link>
          <router-link to="/settings/remove-wallet" class="btn danger w-full">Remove Wallet</router-link>
       </div>
    </div>

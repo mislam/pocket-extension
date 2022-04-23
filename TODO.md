@@ -1,14 +1,19 @@
 # TODO
 
-## Updates / Improvements
+## BugFix
 
+-  [x] Menu is going under textarea
+
+## Improvements
+
+-  [x] Pass proper title and description to unlock screen
 -  [ ] Use transition between views
 -  [ ] Blur background when sidebar opens
 
 ## New Features
 
 -  [ ] Rename wallet
--  [x] Reveal private key
+-  [x] Show private key
 -  [ ] Import wallet with keyfile
 -  [ ] Forgot password/recovery
 -  [ ] Reset wallets

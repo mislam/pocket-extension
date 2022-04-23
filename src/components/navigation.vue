@@ -96,7 +96,7 @@ const goto = (to: string) => {
       </ul>
       <!-- Sidebar -->
       <Transition name="slide-fade">
-         <div v-if="menu" class="flex absolute top-0 w-full h-full max-w-sm">
+         <div v-if="menu" class="flex absolute z-10 top-0 w-full h-full max-w-sm">
             <div class="grow bg-slate-900 h-full">
                <div class="flex h-12 border-b border-b-slate-800">
                   <div class="grow flex items-center pl-3.5 text-xl font-semibold text-slate-500">Pocket</div>

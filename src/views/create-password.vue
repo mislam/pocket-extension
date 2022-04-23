@@ -28,7 +28,7 @@ const create = async () => {
 
 <template>
    <div class="view without-footer flex flex-col">
-      <div class="flex justify-center mb-5 text-3xl leading-none">
+      <div class="flex justify-center mb-5">
          <div class="logo-circle">
             <svg width="96" height="96" viewBox="0 0 96 96" class="-translate-y-1" xmlns="http://www.w3.org/2000/svg">
                <path d="M65,4A38.41,38.41,0,0,0,9.6,38.4V96H28.8V71.8L25.15,58.54l13-3.64A18.8,18.8,0,0,1,34.43,52,19.21,19.21,0,0,1,55.72,20.81L68.66,17.2Z" fill="#1d8aed" />

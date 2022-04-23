@@ -1,12 +1,20 @@
-import { Router, createRouter, createWebHashHistory, RouteLocationRaw } from 'vue-router'
+import { Router, createRouter, createWebHashHistory } from 'vue-router'
 import store from '@/modules/store'
 
 const routeOptions: any = {
    '/onboarding': {
-      meta: { requiresPassword: true },
+      meta: {
+         requiresPassword: true,
+      },
    },
    '/settings/private-key': {
-      meta: { requiresPassword: true },
+      meta: {
+         requiresPassword: {
+            title: 'Show Private Key',
+            description:
+               'Never disclose your private key! Anyone with your private key can fully control your wallet, including transfering away your funds.',
+         },
+      },
    },
 }
 
@@ -41,16 +49,25 @@ router.beforeEach((to, from) => {
          return '/create-password'
       }
    }
+   // if password is set yet and still requesting create password route, cancel routing
+   else if (to.path === '/create-password') {
+      return false
+   }
    // if password is set and routing to the unlock route, do nothing (stay there)
    else if (to.path === '/unlock') {
-      // do nothing, stay at unlock route
+      // if already unlocked and not requesting password verification, cancel routing
+      if (!store.state.locked && !to.params.returnTo) {
+         return false
+      }
    }
    // if the route requires password and the encryptedPassword is not passed, go to unlock
    else if (to.meta.requiresPassword && !to.params.ep) {
+      const requiresPassword: any = to.meta.requiresPassword
       return {
          name: '/unlock',
          params: {
-            prompt: 'Enter password to proceed',
+            title: requiresPassword.title || '',
+            description: requiresPassword.description || '',
             returnTo: to.path,
          },
       }
