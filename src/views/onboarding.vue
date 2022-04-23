@@ -56,7 +56,7 @@ const importWallet = async () => {
       <button @click="switchMethod('import')" class="btn w-full mt-3">I already have a wallet</button>
    </div>
    <!-- Import -->
-   <div class="view" v-if="'import' === method">
+   <div class="view without-footer" v-if="'import' === method">
       <div class="flex justify-center mb-3 text-heading">Import Your Wallet</div>
       <div class="flex justify-center mb-5 text-subheading text-center">Import an existing wallet with your 128-digit private key.</div>
       <form class="grow flex flex-col" @submit.prevent="importWallet">

@@ -90,7 +90,7 @@ const getPrivateKey = async (encryptedPassword: string, wallet: any) => {
    const privateKey: string = await decrypt(password, wallet.encryptedPrivateKey)
    const derivedWallet = (await KeyManager.fromPrivateKey(privateKey)).getAccount()
    if (
-      validateWallet(derivedWallet) &&
+      _validateWallet(derivedWallet) &&
       wallet.address === derivedWallet.address &&
       privateKey === derivedWallet.privateKey &&
       derivedWallet.privateKey.length === 128
@@ -102,31 +102,31 @@ const getPrivateKey = async (encryptedPassword: string, wallet: any) => {
 
 const createNew = async (encryptedPassword: string) => {
    const wallet = (await KeyManager.createRandom()).getAccount()
-   if (!validateWallet(wallet)) {
+   if (!_validateWallet(wallet)) {
       throw new Error('Could not create a new wallet')
    }
-   if (walletExist(wallet)) {
+   if (_walletExist(wallet)) {
       throw new Error('You already have this wallet')
    }
-   if (!(await storeEncryptedWallet(encryptedPassword, wallet))) {
+   if (!(await _storeEncryptedWallet(encryptedPassword, wallet))) {
       throw new Error('Could not store wallet')
    }
 }
 
 const importFromPrivateKey = async (encryptedPassword: string, privateKey: string) => {
    const wallet = (await KeyManager.fromPrivateKey(privateKey)).getAccount()
-   if (!validateWallet(wallet)) {
+   if (!_validateWallet(wallet)) {
       throw new Error('You entered an invalid private key.')
    }
-   if (walletExist(wallet)) {
+   if (_walletExist(wallet)) {
       throw new Error('You already have this wallet.')
    }
-   if (!(await storeEncryptedWallet(encryptedPassword, wallet))) {
+   if (!(await _storeEncryptedWallet(encryptedPassword, wallet))) {
       throw new Error('Could not store wallet')
    }
 }
 
-const validateWallet = (wallet: Wallet) => {
+const _validateWallet = (wallet: Wallet) => {
    return (
       wallet.address.length === 40 &&
       wallet.publicKey.length === 64 &&
@@ -134,7 +134,7 @@ const validateWallet = (wallet: Wallet) => {
    )
 }
 
-const walletExist = (wallet: Wallet) => {
+const _walletExist = (wallet: Wallet) => {
    for (const storedWallet of store.state.wallets) {
       if (wallet.address === storedWallet.address) {
          return true
@@ -148,7 +148,7 @@ const walletExist = (wallet: Wallet) => {
  * and store the wallet with its address and the encrypted private key.
  * @param {Wallet} wallet
  */
-const storeEncryptedWallet = async (
+const _storeEncryptedWallet = async (
    encryptedPassword: string,
    wallet: Wallet,
 ): Promise<boolean> => {
@@ -161,6 +161,14 @@ const storeEncryptedWallet = async (
       encryptedPrivateKey: await encrypt(password, wallet.privateKey),
    })
    return true
+}
+
+/**
+ * Change the name of a wallet
+ * @param name {string}
+ */
+const changeName = async (address: string, name: string) => {
+   await store.dispatch('changeWalletName', { address, name })
 }
 
 const getBalance = async (address: string): Promise<number> => {
@@ -187,8 +195,9 @@ export default {
    lock,
    unlock,
    encryptPassword,
+   getPrivateKey,
    createNew,
    importFromPrivateKey,
-   getPrivateKey,
+   changeName,
    getBalance,
 }

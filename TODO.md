@@ -12,7 +12,7 @@
 
 ## New Features
 
--  [ ] Rename wallet
+-  [x] Rename wallet
 -  [x] Show private key
 -  [ ] Import wallet with keyfile
 -  [ ] Forgot password/recovery
@@ -20,6 +20,7 @@
 -  [ ] Change password
 -  [ ] Autolock after timeout
 -  [ ] Change network (mainnet, testnet, etc.)
+-  [ ] Import latest `pocket-js-slim` instead of housing a local modified copy
 -  [ ] Change language (i.e. Español)
 -  [ ] Send POKT to other wallet
 -  [ ] External terms page (checkbox links from create-password view)
