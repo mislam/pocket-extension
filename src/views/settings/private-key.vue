@@ -42,7 +42,7 @@ const copy = () => {
          <div class="relative">
             <textarea class="block w-full font-mono" rows="5" v-model="privateKey" disabled></textarea>
             <div class="absolute bottom-2 right-2">
-               <button @click="copy" class="btn small oval primary copy-btn">{{ copyButtonText }}</button>
+               <button type="button" @click="copy" class="btn small oval primary copy-btn">{{ copyButtonText }}</button>
             </div>
          </div>
       </div>

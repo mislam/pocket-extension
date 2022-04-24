@@ -199,3 +199,7 @@ ul.tabs li svg {
 .alert.danger {
    @apply bg-red-500/30 border-red-500/60;
 }
+
+.Vue-Toastification__toast {
+   font-family: inherit;
+}

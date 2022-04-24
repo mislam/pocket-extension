@@ -52,8 +52,8 @@ const importWallet = async () => {
       <div class="flex justify-center mb-5 text-subheading text-center">Now let's set up a secure wallet for you.</div>
       <div v-if="error" class="mb-5 form-error-message">{{ error }}</div>
       <div class="grow"></div>
-      <button @click="create" class="btn primary w-full">Create a new wallet</button>
-      <button @click="switchMethod('import')" class="btn w-full mt-3">I already have a wallet</button>
+      <button type="button" @click="create" class="btn primary w-full">Create a new wallet</button>
+      <button type="button" @click="switchMethod('import')" class="btn w-full mt-3">I already have a wallet</button>
    </div>
    <!-- Import -->
    <div class="view without-footer" v-if="'import' === method">
@@ -65,8 +65,8 @@ const importWallet = async () => {
          </div>
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
          <div class="grow"></div>
-         <button class="btn primary w-full mt-5" :disabled="!privateKeyInput.length">Import Wallet</button>
+         <button type="submit" class="btn primary w-full mt-5" :disabled="!privateKeyInput.length">Import Wallet</button>
       </form>
-      <button @click="switchMethod('create')" class="btn w-full mt-3">Or, Create a new wallet</button>
+      <button type="button" @click="switchMethod('create')" class="btn w-full mt-3">Or, Create a new wallet</button>
    </div>
 </template>

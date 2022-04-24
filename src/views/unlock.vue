@@ -17,7 +17,7 @@ const props = defineProps({
 const title = props.title || 'Unlock Your Wallet'
 const description = props.description || ''
 const returnTo = props.returnTo || ''
-const buttonText = returnTo ? 'Confirm' : 'Unlock'
+const buttonText = props.title && returnTo ? 'Confirm' : 'Unlock'
 
 onMounted(() => {
    // autofocus on the input field
@@ -65,7 +65,7 @@ const unlock = async () => {
                <p class="text-sm">{{ description }}</p>
             </div>
          </div>
-         <button class="btn primary w-full mt-5" :disabled="!password">{{ buttonText }}</button>
+         <button type="submit" class="btn primary w-full mt-5" :disabled="!password">{{ buttonText }}</button>
       </form>
    </div>
 </template>

@@ -5,7 +5,7 @@ import Wallet from '@/modules/wallet'
 
 const router = useRouter()
 const password = ref<string>('')
-const passwordConfirm = ref<string>('')
+const confirmPassword = ref<string>('')
 const passwordInput = ref<any>(null)
 const error = ref<boolean | string>(false)
 
@@ -15,7 +15,7 @@ onMounted(() => {
 })
 
 const create = async () => {
-   const validation = Wallet.validatePassword(password.value, passwordConfirm.value)
+   const validation = Wallet.validatePassword(password.value, confirmPassword.value)
    error.value = validation.error
    if (validation.error) {
       return
@@ -44,11 +44,11 @@ const create = async () => {
             <input class="block w-full" type="password" v-model="password" ref="passwordInput" placeholder="Password" autocomplete="new-password" />
          </div>
          <div>
-            <input class="block w-full" type="password" v-model="passwordConfirm" placeholder="Confirm Password" autocomplete="new-password" />
+            <input class="block w-full" type="password" v-model="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" />
          </div>
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
          <div class="grow"></div>
-         <button class="btn primary w-full mt-5" :disabled="!password || !passwordConfirm">Create</button>
+         <button type="submit" class="btn primary w-full mt-5" :disabled="!password || !confirmPassword">Create</button>
       </form>
    </div>
 </template>

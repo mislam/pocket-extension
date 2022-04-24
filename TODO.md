@@ -7,6 +7,7 @@
 ## Improvements
 
 -  [x] Pass proper title and description to unlock screen
+-  [ ] Replace some of the `router.push` with `router.replace` for an optimized history
 -  [ ] Use transition between views
 -  [ ] Blur background when sidebar opens
 
@@ -17,7 +18,7 @@
 -  [ ] Import wallet with keyfile
 -  [ ] Forgot password/recovery
 -  [ ] Reset wallets
--  [ ] Change password
+-  [x] Change password
 -  [ ] Autolock after timeout
 -  [ ] Change network (mainnet, testnet, etc.)
 -  [ ] Import latest `pocket-js-slim` instead of housing a local modified copy

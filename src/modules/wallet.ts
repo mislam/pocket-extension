@@ -58,11 +58,25 @@ const createPassword = async (password: string) => {
    await store.dispatch('unlock')
 }
 
+const changePassword = async (currentPassword: string, newPassword: string) => {
+   const wallets = JSON.parse(JSON.stringify(store.state.wallets)) // clone
+
+   // Update private keys of existing wallets (if any)
+   for (const wallet of wallets) {
+      const privateKey = await decrypt(currentPassword, wallet.encryptedPrivateKey)
+      wallet.encryptedPrivateKey = await encrypt(newPassword, privateKey)
+   }
+   store.dispatch('setWallets', wallets)
+
+   const passwordHash = await sha256(newPassword)
+   await store.dispatch('setPasswordHash', passwordHash)
+}
+
 const lock = async () => {
    await store.dispatch('lock')
 }
 
-const unlock = async (password: string): Promise<{ error: string | boolean }> => {
+const verifyPassword = async (password: string): Promise<{ error: string | boolean }> => {
    if (!password.length) {
       // if password is empty
       return {
@@ -75,9 +89,22 @@ const unlock = async (password: string): Promise<{ error: string | boolean }> =>
          error: 'Incorrect password',
       }
    }
-   await store.dispatch('unlock')
    return {
       error: false,
+   }
+}
+
+const unlock = async (password: string): Promise<{ error: string | boolean }> => {
+   const verify = await verifyPassword(password)
+   if (verify.error) {
+      return {
+         error: verify.error,
+      }
+   } else {
+      await store.dispatch('unlock')
+      return {
+         error: false,
+      }
    }
 }
 
@@ -192,6 +219,8 @@ export default {
    init,
    validatePassword,
    createPassword,
+   changePassword,
+   verifyPassword,
    lock,
    unlock,
    encryptPassword,
