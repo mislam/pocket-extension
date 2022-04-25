@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useToast } from 'vue-toastification'
+import capitalize from 'lodash.capitalize'
 import Config from '@/modules/config'
 
 const store = useStore()
@@ -18,7 +19,7 @@ const select = async (network: string) => {
    if (selectedNetwork.value !== network) {
       selectedNetwork.value = network
       await store.dispatch('setNetwork', network)
-      toast.info(`Network changed to ${network}.`, {
+      toast.info(`Network is changed to ${capitalize(network)}.`, {
          timeout: 3000,
       })
    }

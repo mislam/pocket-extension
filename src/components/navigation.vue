@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { useToast } from 'vue-toastification'
+import capitalize from 'lodash.capitalize'
 import Wallet from '@/modules/wallet'
 
 const store = useStore()
@@ -13,6 +14,18 @@ const menu = ref(false)
 
 const currentRoute = computed(() => {
    return router.currentRoute.value.path
+})
+
+const network = computed(() => {
+   return capitalize(store.state.network)
+})
+
+const mainnet = computed(() => {
+   return store.state.network === 'mainnet'
+})
+
+const testnet = computed(() => {
+   return store.state.network === 'testnet'
 })
 
 const finishedOnboarding = computed(() => {
@@ -86,7 +99,17 @@ const copyWalletAddress = () => {
                <div class="text-white/90 whitespace-nowrap">{{ selectedWallet.name }}</div>
                <div @click="copyWalletAddress" class="text-white/60 pl-2 font-mono cursor-pointer hover:text-blue-400">({{ selectedWallet.shortAddress }})</div>
             </div>
-            <div class="flex-none w-12 h-12"></div>
+            <div class="flex-none w-12 h-12">
+               <router-link to="/settings/change-network" class="block w-full h-full p-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300" :title="network">
+                  <svg width="20" height="20" viewBox="0 0 20 20" class="fill-current transition-colors" xmlns="http://www.w3.org/2000/svg">
+                     <path
+                        v-if="mainnet"
+                        d="M10,0A10,10,0,1,0,20,10,10,10,0,0,0,10,0Zm4.28,13.68a1,1,0,0,1-1,1,1,1,0,0,1-.94-1V11.6l0-2.67-1.29,2.6c-.31.64-.56.9-1.15.9s-.83-.25-1.12-.89L7.6,9.06l0,2.48v2.14a1,1,0,0,1-1,1,1,1,0,0,1-.94-1V6.31a1,1,0,0,1,1.06-1A1.16,1.16,0,0,1,7.91,6L10,10.16,12.09,6a1.15,1.15,0,0,1,1.12-.7,1,1,0,0,1,1.07,1Z"
+                     />
+                     <path v-if="testnet" d="M10,0A10,10,0,1,0,20,10,10,10,0,0,0,10,0Zm2.81,7.07H11V13.6a1,1,0,1,1-2,0V7.07H7.19a.84.84,0,1,1,0-1.68h5.62a.84.84,0,0,1,0,1.68Z" />
+                  </svg>
+               </router-link>
+            </div>
          </div>
       </transition>
       <!-- Footer -->
