@@ -18,10 +18,6 @@ onMounted(() => {
    passwordInput.value.focus()
 })
 
-const cancel = async () => {
-   router.push('/settings')
-}
-
 const change = async () => {
    // Verify the current password
    const verify = await Wallet.verifyPassword(currentPassword.value)
@@ -69,7 +65,7 @@ const change = async () => {
          <div v-if="verifyError || changeError" class="mt-3 form-error-message">{{ verifyError || changeError }}</div>
          <div class="grow"></div>
          <div class="grid grid-cols-2 gap-3">
-            <button type="button" @click="cancel" class="btn w-full">Cancel</button>
+            <router-link to="/settings" class="btn block">Cancel</router-link>
             <button type="submit" class="btn primary w-full" :disabled="!currentPassword || !newPassword || !confirmPassword">Change</button>
          </div>
       </form>

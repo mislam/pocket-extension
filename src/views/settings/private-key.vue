@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useStore } from 'vuex'
+import { useToast } from 'vue-toastification'
 import Wallet from '@/modules/wallet'
 
 // Get the encrypted password sent from unlock screen
@@ -8,6 +9,7 @@ const props = defineProps({ ep: String })
 const encryptedPassword = props.ep || ''
 
 const store = useStore()
+const toast = useToast()
 const privateKey = ref<string>('')
 const error = ref<boolean | string>(false)
 const copyButtonText = ref<string>('Copy')
@@ -26,10 +28,9 @@ if (encryptedPassword) {
 
 const copy = () => {
    navigator.clipboard.writeText(privateKey.value)
-   copyButtonText.value = 'Copied!'
-   setTimeout(() => {
-      copyButtonText.value = 'Copy'
-   }, 2000)
+   toast.success('The private key is copied to your clipboard.', {
+      timeout: 3000,
+   })
 }
 </script>
 
@@ -42,18 +43,15 @@ const copy = () => {
          <div class="relative">
             <textarea class="block w-full font-mono" rows="5" v-model="privateKey" disabled></textarea>
             <div class="absolute bottom-2 right-2">
-               <button type="button" @click="copy" class="btn small oval primary copy-btn">{{ copyButtonText }}</button>
+               <button type="button" @click="copy" class="btn small oval primary">{{ copyButtonText }}</button>
             </div>
          </div>
       </div>
       <div v-else class="alert danger mb-5">
          <p>{{ error }}</p>
       </div>
+      <div class="mt-5">
+         <router-link to="/settings" class="btn block">Go Back</router-link>
+      </div>
    </div>
 </template>
-
-<style scoped>
-.copy-btn {
-   width: 76px;
-}
-</style>

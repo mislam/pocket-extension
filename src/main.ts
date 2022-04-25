@@ -19,6 +19,7 @@ app.use(toast, {
    position: 'top-center',
    closeButton: false,
    hideProgressBar: true,
+   pauseOnHover: false,
 })
 
 // First initialize store and then use it

@@ -2,10 +2,12 @@
 import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
 import Wallet from '@/modules/wallet'
 
 const store = useStore()
 const router = useRouter()
+const toast = useToast()
 const visible = ref(false)
 const menu = ref(false)
 
@@ -26,7 +28,8 @@ const selectedWallet = computed(() => {
    const wallet = store.state.selectedWallet
    return {
       name: wallet.name,
-      shortAddress: wallet.address.slice(0, 4).toUpperCase() + '...' + wallet.address.slice(-4).toUpperCase(),
+      address: wallet.address,
+      shortAddress: wallet.address.slice(0, 3).toUpperCase() + '..' + wallet.address.slice(-3).toUpperCase(),
    }
 })
 
@@ -56,6 +59,13 @@ const goto = (to: string) => {
       router.push(to)
    }
 }
+
+const copyWalletAddress = () => {
+   navigator.clipboard.writeText(selectedWallet.value.address)
+   toast.success('The wallet address is copied to your clipboard.', {
+      timeout: 3000,
+   })
+}
 </script>
 
 <template>
@@ -73,8 +83,8 @@ const goto = (to: string) => {
                </div>
             </div>
             <div class="grow flex justify-center items-center">
-               <span class="text-white/90">{{ selectedWallet.name }}</span>
-               <span class="text-white/60 pl-2">({{ selectedWallet.shortAddress }})</span>
+               <div class="text-white/90 whitespace-nowrap">{{ selectedWallet.name }}</div>
+               <div @click="copyWalletAddress" class="text-white/60 pl-2 font-mono cursor-pointer hover:text-blue-400">({{ selectedWallet.shortAddress }})</div>
             </div>
             <div class="flex-none w-12 h-12"></div>
          </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useToast } from 'vue-toastification'
 import Wallet from '@/modules/wallet'
@@ -7,6 +7,7 @@ import Wallet from '@/modules/wallet'
 const store = useStore()
 const toast = useToast()
 const walletName = ref<string>(store.state.selectedWallet.name)
+const walletNamePreview: any = ref(null)
 
 const selectedWallet = computed(() => {
    return store.state.selectedWallet
@@ -15,6 +16,14 @@ const selectedWallet = computed(() => {
 const walletNameIsEdited = computed(() => {
    return walletName.value && walletName.value !== selectedWallet.value.name
 })
+
+// limit wallet name length to be 140px at max
+const limitWalletName = () => {
+   const width = walletNamePreview.value.offsetWidth
+   if (width > 140) {
+      walletName.value = walletName.value.slice(0, -1)
+   }
+}
 
 const changeWalletName = async () => {
    await Wallet.changeName(selectedWallet.value.address, walletName.value)
@@ -29,9 +38,10 @@ const changeWalletName = async () => {
       <div class="mb-5">
          <label class="block mb-1">Change Wallet Name</label>
          <form class="grow flex bg-slate-900 rounded-md p-1 pl-0" @submit.prevent="changeWalletName">
-            <input class="grow text-xl" type="text" v-model="walletName" />
+            <input class="grow text-xl" type="text" v-model="walletName" @keyup="limitWalletName" />
             <button type="submit" class="btn small primary" :disabled="!walletNameIsEdited">Change</button>
          </form>
+         <span ref="walletNamePreview" class="absolute text-transparent -z-10 whitespace-nowrap">{{ walletName }}</span>
       </div>
       <div class="pills">
          <router-link to="/settings/change-password">
