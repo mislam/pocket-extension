@@ -1,19 +1,16 @@
 import { Router, createRouter, createWebHashHistory } from 'vue-router'
 import store from '@/modules/store'
 
+// Include additional meta fields to some special routes
 const routeOptions: any = {
    '/onboarding': {
-      meta: {
-         requiresPassword: true,
-      },
+      requiresPassword: true,
    },
    '/settings/private-key': {
-      meta: {
-         requiresPassword: {
-            title: 'Show Private Key',
-            description:
-               'Never disclose your private key! Anyone with your private key can fully control your wallet, including transfering away your funds.',
-         },
+      requiresPassword: {
+         title: 'Show Private Key',
+         description:
+            'Never disclose your private key! Anyone with your private key can fully control your wallet, including transfering away your funds.',
       },
    },
 }
@@ -30,9 +27,10 @@ Object.entries(views).forEach(([viewPath, viewModule]: any) => {
       path: routePath,
       props: true,
       component: viewModule.default,
+      meta: {},
    }
    if (routeOptions.hasOwnProperty(routePath)) {
-      Object.assign(route, routeOptions[routePath])
+      Object.assign(route.meta, routeOptions[routePath])
    }
    routes.push(route)
 })
@@ -55,9 +53,9 @@ router.beforeEach((to, from) => {
    }
    // if password is set and routing to the unlock route, do nothing (stay there)
    else if (to.path === '/unlock') {
-      // if already unlocked and not requesting password verification, cancel routing
+      // if already unlocked and not requesting password verification, go to dashboard
       if (!store.state.locked && !to.params.returnTo) {
-         return false
+         return '/dashboard'
       }
    }
    // if the route requires password and the encryptedPassword is not passed, go to unlock

@@ -125,17 +125,17 @@ input[type='password']::placeholder {
 }
 
 .app {
-   @apply flex flex-col;
+   @apply relative flex flex-col;
    width: 360px;
    height: 540px;
 }
 
 .view {
-   @apply grow flex flex-col p-5 mb-14 overflow-auto;
+   @apply absolute w-full top-12 bottom-14 flex flex-col p-5 overflow-auto;
 }
 
 .view.without-footer {
-   @apply mb-0;
+   @apply top-0 bottom-0;
 }
 
 .logo-circle {
@@ -202,4 +202,15 @@ ul.tabs li svg {
 
 .Vue-Toastification__toast {
    font-family: inherit;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+   transition: all 0.2s ease-in-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+   transform: translateX(-2%);
+   opacity: 0;
 }

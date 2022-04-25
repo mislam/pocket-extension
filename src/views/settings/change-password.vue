@@ -37,11 +37,16 @@ const change = async () => {
    if (validation.error) {
       return
    }
+   // If the current and new password are identical
+   if (currentPassword.value === newPassword.value) {
+      changeError.value = 'Your new password must be different than your current password.'
+      return
+   }
    // Change password
    await Wallet.changePassword(currentPassword.value, newPassword.value)
    await Wallet.lock()
-   toast.success('Password changed successfully! Please unlock now with your new password.', {
-      timeout: 6000,
+   toast.success('Password changed successfully! Now you can use the new password to unlock your wallet.', {
+      timeout: 5000,
    })
    router.push('/unlock')
 }

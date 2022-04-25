@@ -8,7 +8,7 @@
 
 -  [x] Pass proper title and description to unlock screen
 -  [ ] Replace some of the `router.push` with `router.replace` for an optimized history
--  [ ] Use transition between views
+-  [x] Use transition between views
 -  [ ] Blur background when sidebar opens
 
 ## New Features
