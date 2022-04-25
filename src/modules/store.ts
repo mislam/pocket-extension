@@ -11,6 +11,7 @@ interface Wallet {
 interface State {
    locked: boolean
    passwordHash: string
+   network: string
    wallets: Wallet[]
    selectedWallet?: Wallet
 }
@@ -19,6 +20,7 @@ export default createStore<State>({
    state: {
       locked: true,
       passwordHash: '', // SHA-256 hash of the password
+      network: 'mainnet',
       wallets: [],
    },
    mutations: {
@@ -27,6 +29,9 @@ export default createStore<State>({
       },
       setPasswordHash(state, hash) {
          state.passwordHash = hash
+      },
+      setNetwork(state, network) {
+         state.network = network
       },
       setWallets(state, wallets) {
          state.wallets = wallets
@@ -43,6 +48,7 @@ export default createStore<State>({
          commit('setPasswordHash', Storage.get('passwordHash'))
          commit('setWallets', Storage.get('wallets'))
          commit('setSelectedWallet', Storage.get('selectedWallet'))
+         commit('setNetwork', Storage.get('network', state.network))
       },
       async lock({ commit }) {
          commit('lock', true)
@@ -55,6 +61,10 @@ export default createStore<State>({
       async setPasswordHash({ commit }, hash) {
          commit('setPasswordHash', hash)
          await Storage.set('passwordHash', hash)
+      },
+      async setNetwork({ commit }, network) {
+         commit('setNetwork', network)
+         await Storage.set('network', network)
       },
       async setWallets({ commit, state }, wallets) {
          commit('setWallets', wallets)

@@ -199,7 +199,7 @@ const changeName = async (address: string, name: string) => {
 }
 
 const getBalance = async (address: string): Promise<number> => {
-   const rpcUrl = Config.RPC_URL
+   const rpcUrl = Config.getRpcUrl(store.state.network)
    const provider = new IsomorphicProvider({ rpcUrl })
    const balance = Cache.get(`balance:${address}`)
    if (balance !== undefined) return balance

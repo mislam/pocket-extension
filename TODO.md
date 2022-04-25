@@ -20,7 +20,7 @@
 -  [ ] Reset wallets
 -  [x] Change password
 -  [ ] Autolock after timeout
--  [ ] Change network (mainnet, testnet, etc.)
+-  [x] Change network (mainnet, testnet, etc.)
 -  [ ] Import latest `pocket-js-slim` instead of housing a local modified copy
 -  [ ] Change language (i.e. Español)
 -  [ ] Send POKT to other wallet
