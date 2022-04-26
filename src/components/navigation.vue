@@ -37,6 +37,18 @@ const unlocked = computed(() => {
    return !store.state.locked && '/unlock' !== router.currentRoute.value.path
 })
 
+const wallets = computed(() => {
+   const wallets = []
+   for (const wallet of store.state.wallets) {
+      wallets.push({
+         name: wallet.name,
+         address: wallet.address,
+         shortAddress: wallet.address.slice(0, 3).toUpperCase() + '..' + wallet.address.slice(-3).toUpperCase(),
+      })
+   }
+   return wallets
+})
+
 const selectedWallet = computed(() => {
    const wallet = store.state.selectedWallet
    return {
@@ -97,7 +109,7 @@ const copyWalletAddress = () => {
             </div>
             <div class="grow flex justify-center items-center">
                <div class="text-white/90 whitespace-nowrap">{{ selectedWallet.name }}</div>
-               <div @click="copyWalletAddress" class="text-white/60 pl-2 font-mono cursor-pointer hover:text-blue-400">({{ selectedWallet.shortAddress }})</div>
+               <div @click="copyWalletAddress" class="text-white/60 pl-2 font-mono cursor-pointer hover:text-blue-400 transition-colors">({{ selectedWallet.shortAddress }})</div>
             </div>
             <div class="flex-none w-12 h-12">
                <router-link to="/settings/change-network" class="block w-full h-full p-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300" :title="network">
@@ -144,18 +156,38 @@ const copyWalletAddress = () => {
          <div v-if="menu" class="flex absolute z-10 top-0 w-full h-full max-w-sm">
             <div class="grow bg-slate-900 h-full">
                <div class="flex h-12 border-b border-b-slate-800">
-                  <div class="grow flex items-center pl-3.5 text-xl font-semibold text-slate-500">Pocket</div>
-                  <div @click="closeMenu" class="flex-none w-12 h-12 p-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300">
+                  <div class="grow flex items-center pl-5 text-lg font-semibold text-white/40">Pocket</div>
+                  <div @click="closeMenu" class="flex-none w-12 h-12 p-3.5 text-white/40 hover:text-white/90 transition-colors cursor-pointer">
                      <div>
-                        <svg width="20" height="20" viewBox="0 0 20 20" class="fill-current transition-colors" xmlns="http://www.w3.org/2000/svg">
-                           <rect x="9" y="0.1" width="2" height="19.8" rx="1" transform="translate(-4.14 10) rotate(-45)" />
-                           <rect x="0.1" y="9" width="19.8" height="2" rx="1" transform="translate(-4.14 10) rotate(-45)" />
+                        <svg width="20" height="20" viewBox="0 0 20 20" class="fill-current" xmlns="http://www.w3.org/2000/svg">
+                           <path
+                              d="M10,11.39l4.88,4.87A1,1,0,0,0,16.43,15l-.11-.11L11.44,10,16.32,5.1a1,1,0,0,0,0-1.42h0a1,1,0,0,0-1.41,0L10,8.56,5.15,3.68A1,1,0,0,0,3.73,5.09h0L8.62,10,3.74,14.85A1,1,0,0,0,5,16.37l.11-.11Z"
+                           />
                         </svg>
                      </div>
                   </div>
                </div>
-               <div class="p-3.5 text-slate-300 text-lg">
-                  <div v-if="!store.state.locked" @click="lockWallet" class="flex items-center transition-colors hover:cursor-pointer hover:text-blue-500">
+               <div class="grid gap-2 px-5 py-4 text-white/80">
+                  <!-- Wallet List -->
+                  <div class="wallet-list">
+                     <dl v-for="wallet in wallets" :class="{ selected: wallet.address === selectedWallet.address }">
+                        <dt>{{ wallet.name }}</dt>
+                        <dd>({{ wallet.shortAddress }})</dd>
+                     </dl>
+                  </div>
+                  <hr class="border-white/20" />
+                  <!-- Add Wallet -->
+                  <router-link to="/add-wallet" @click="closeMenu" class="flex items-center hover:cursor-pointer hover:text-blue-400 transition-colors">
+                     <div class="mr-2">
+                        <svg width="20" height="20" viewBox="0 0 20 20" class="fill fill-current" xmlns="http://www.w3.org/2000/svg">
+                           <path d="M15.5,8.5h-4v-4a1.5,1.5,0,0,0-3,0v4h-4a1.5,1.5,0,0,0,0,3h4v4a1.5,1.5,0,0,0,3,0v-4h4a1.5,1.5,0,0,0,0-3Z" />
+                        </svg>
+                     </div>
+                     <div>Add Wallet</div>
+                  </router-link>
+                  <hr class="border-white/20" />
+                  <!-- Lock Wallet -->
+                  <div @click="lockWallet" class="flex items-center hover:cursor-pointer hover:text-blue-400 transition-colors">
                      <div class="mr-2">
                         <svg width="20" height="20" viewBox="0 0 20 20" class="fill fill-current" xmlns="http://www.w3.org/2000/svg">
                            <path d="M15,8A5,5,0,0,0,5,8H3v9H17V8ZM10,5a3,3,0,0,1,3,3H7A3,3,0,0,1,10,5Z" />
@@ -165,13 +197,41 @@ const copyWalletAddress = () => {
                   </div>
                </div>
             </div>
-            <div @click="closeMenu" class="w-24"></div>
+            <div @click="closeMenu" class="w-1/6"></div>
          </div>
       </transition>
    </div>
 </template>
 
 <style scoped>
+.wallet-list {
+   @apply grid gap-2;
+}
+
+.wallet-list dl {
+   @apply flex items-center hover:text-blue-400 cursor-pointer transition-colors;
+}
+
+.wallet-list dt {
+   @apply whitespace-nowrap;
+}
+
+.wallet-list dd {
+   @apply grow text-white/40 font-mono pl-1 pr-2;
+}
+
+.wallet-list dd {
+   @apply grow text-white/40 font-mono pl-1 pr-2;
+}
+
+.wallet-list dl.selected:after {
+   @apply block bg-white/90 mb-0.5;
+   content: '';
+   width: 15px;
+   height: 12px;
+   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 15 12'%3E%3Crect x='-0.95' y='6.41' width='9.2' height='3.45' rx='1.72' transform='translate(7.25 -0.02) rotate(47.97)'/%3E%3Crect x='1.95' y='4.28' width='14.95' height='3.45' rx='1.72' transform='translate(-1.34 8.99) rotate(-47.97)'/%3E%3C/svg%3E");
+}
+
 .slide-fade-enter-active,
 .slide-fade-leave-active,
 .slide-up-fade-enter-active,
@@ -180,16 +240,19 @@ const copyWalletAddress = () => {
 .slide-down-fade-leave-active {
    transition: all 0.3s ease;
 }
+
 .slide-fade-enter-from,
 .slide-fade-leave-to {
    transform: translateX(-100%);
    opacity: 0;
 }
+
 .slide-up-fade-enter-from,
 .slide-up-fade-leave-to {
    transform: translateY(-100%);
    opacity: 0;
 }
+
 .slide-down-fade-enter-from,
 .slide-down-fade-leave-to {
    transform: translateY(100%);
