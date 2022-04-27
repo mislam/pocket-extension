@@ -3,11 +3,12 @@
 ## BugFix
 
 -  [x] Menu is going under textarea
+-  [ ] Sidebar menus go under visible area when there are too many wallets
 
 ## Improvements
 
 -  [x] Pass proper title and description to unlock screen
--  [ ] Replace some of the `router.push` with `router.replace` for an optimized history
+-  [x] Replace some of the `router.push` with `router.replace` for an optimized history
 -  [x] Use transition between views
 -  [ ] Blur background when sidebar opens
 
@@ -15,6 +16,8 @@
 
 -  [x] Rename wallet
 -  [x] Show private key
+-  [x] Add new wallet
+-  [x] Switch between wallets
 -  [ ] Import wallet with keyfile
 -  [ ] Forgot password/recovery
 -  [ ] Reset wallets

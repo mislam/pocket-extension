@@ -79,17 +79,17 @@ const lockWallet = async () => {
    closeMenu()
 }
 
-const goto = (to: string) => {
-   if (to !== currentRoute.value) {
-      router.push(to)
-   }
-}
-
 const copyWalletAddress = () => {
    navigator.clipboard.writeText(selectedWallet.value.address)
    toast.success('The wallet address is copied to your clipboard.', {
       timeout: 3000,
    })
+}
+
+const selectWallet = async (address: string) => {
+   await store.dispatch('selectWallet', address)
+   router.push('/dashboard')
+   closeMenu()
 }
 </script>
 
@@ -134,14 +134,14 @@ const copyWalletAddress = () => {
                   />
                </svg>
             </router-link>
-            <router-link to="/history" :class="{ active: '/history' === currentRoute }">
+            <!-- <router-link to="/history" :class="{ active: '/history' === currentRoute }">
                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M12,0A12,12,0,0,0,1.31,6.57l4-.52A9,9,0,1,1,3,12s0-.08,0-.11l-3,.39A12,12,0,1,0,12,0Z" />
                   <polygon points="3.11 2.35 7.03 5.78 1.89 7.49 3.11 2.35" />
                   <path d="M3.7,4.19,5.06,5.38,3.28,6,3.7,4.19M2.52.5.5,9,9,6.18,2.52.5Z" />
                   <path d="M12,4.5a7.61,7.61,0,0,0-1.66.19L12.94,7,9.63,8.07,4.89,9.65A7.33,7.33,0,0,0,4.5,12,7.5,7.5,0,1,0,12,4.5Zm1,8V17H11V11.62h0l3.86-3.86,1.41,1.42Z" />
                </svg>
-            </router-link>
+            </router-link> -->
             <router-link to="/settings" :class="{ active: '/settings' === currentRoute }">
                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -167,10 +167,10 @@ const copyWalletAddress = () => {
                      </div>
                   </div>
                </div>
-               <div class="grid gap-2 px-5 py-4 text-white/80">
+               <div class="grid gap-3 px-5 py-3 text-white/80">
                   <!-- Wallet List -->
                   <div class="wallet-list">
-                     <dl v-for="wallet in wallets" :class="{ selected: wallet.address === selectedWallet.address }">
+                     <dl v-for="wallet in wallets" @click="selectWallet(wallet.address)" :class="{ selected: wallet.address === selectedWallet.address }">
                         <dt>{{ wallet.name }}</dt>
                         <dd>({{ wallet.shortAddress }})</dd>
                      </dl>
@@ -209,7 +209,7 @@ const copyWalletAddress = () => {
 }
 
 .wallet-list dl {
-   @apply flex items-center hover:text-blue-400 cursor-pointer transition-colors;
+   @apply flex items-center cursor-pointer;
 }
 
 .wallet-list dt {
@@ -218,6 +218,19 @@ const copyWalletAddress = () => {
 
 .wallet-list dd {
    @apply grow text-white/40 font-mono pl-1 pr-2;
+}
+
+.wallet-list dt,
+.wallet-list dd {
+   @apply transition-colors;
+}
+
+.wallet-list dl:hover dt {
+   @apply text-blue-400;
+}
+
+.wallet-list dl:hover dd {
+   @apply text-blue-400/60;
 }
 
 .wallet-list dd {

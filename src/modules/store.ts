@@ -87,6 +87,15 @@ export default createStore<State>({
          await Storage.set('wallets', wallets)
          await Storage.set('selectedWallet', wallet)
       },
+      async selectWallet({ commit, state }, address: string) {
+         const wallets = JSON.parse(JSON.stringify(state.wallets)) // clone
+         for (const wallet of wallets) {
+            if (wallet.address === address) {
+               commit('setSelectedWallet', wallet)
+               await Storage.set('selectedWallet', wallet)
+            }
+         }
+      },
       async changeWalletName({ commit, state }, { address, name }) {
          const wallets = JSON.parse(JSON.stringify(state.wallets)) // clone
          for (const wallet of wallets) {

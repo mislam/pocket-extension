@@ -11,11 +11,13 @@ const error = ref<any>(false)
 const props = defineProps({
    title: String,
    description: String,
+   alert: String,
    returnTo: String,
 })
 
 const title = props.title || 'Unlock Your Wallet'
 const description = props.description || ''
+const alert = props.alert || ''
 const returnTo = props.returnTo || ''
 const buttonText = props.title && returnTo ? 'Confirm' : 'Unlock'
 
@@ -56,13 +58,14 @@ const unlock = async () => {
             </svg>
          </div>
       </div>
-      <div class="flex justify-center mb-5 text-xl leading-none">{{ title }}</div>
+      <div class="flex justify-center mb-2 text-heading">{{ title }}</div>
+      <div class="flex justify-center mb-5 text-subheading text-center">{{ description }}</div>
       <form class="grow flex flex-col" @submit.prevent="unlock">
          <input type="password" :class="{ 'form-error-input': error }" v-model="password" ref="passwordInput" placeholder="Enter your password" autocomplete="" />
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
          <div class="grow flex items-end">
-            <div v-if="description" class="alert warning mt-5">
-               <p class="text-sm">{{ description }}</p>
+            <div v-if="alert" class="alert warning mt-5">
+               <p class="text-sm">{{ alert }}</p>
             </div>
          </div>
          <button type="submit" class="btn primary mt-5" :disabled="!password">{{ buttonText }}</button>

@@ -128,19 +128,25 @@ const getPrivateKey = async (encryptedPassword: string, wallet: any) => {
 }
 
 const createNew = async (encryptedPassword: string) => {
+   if (!encryptedPassword) {
+      throw new Error('Missing required parameter.')
+   }
    const wallet = (await KeyManager.createRandom()).getAccount()
    if (!_validateWallet(wallet)) {
-      throw new Error('Could not create a new wallet')
+      throw new Error('Could not create a new wallet.')
    }
    if (_walletExist(wallet)) {
-      throw new Error('You already have this wallet')
+      throw new Error('You already have this wallet.')
    }
    if (!(await _storeEncryptedWallet(encryptedPassword, wallet))) {
-      throw new Error('Could not store wallet')
+      throw new Error('Could not store wallet.')
    }
 }
 
 const importFromPrivateKey = async (encryptedPassword: string, privateKey: string) => {
+   if (!encryptedPassword || !privateKey) {
+      throw new Error('Missing required parameter(s).')
+   }
    const wallet = (await KeyManager.fromPrivateKey(privateKey)).getAccount()
    if (!_validateWallet(wallet)) {
       throw new Error('You entered an invalid private key.')
@@ -149,7 +155,7 @@ const importFromPrivateKey = async (encryptedPassword: string, privateKey: strin
       throw new Error('You already have this wallet.')
    }
    if (!(await _storeEncryptedWallet(encryptedPassword, wallet))) {
-      throw new Error('Could not store wallet')
+      throw new Error('Could not store wallet.')
    }
 }
 
@@ -199,14 +205,15 @@ const changeName = async (address: string, name: string) => {
 }
 
 const getBalance = async (address: string): Promise<number> => {
-   const rpcUrl = Config.getRpcUrl(store.state.network)
+   const network = store.state.network
+   const rpcUrl = Config.getRpcUrl(network)
    const provider = new IsomorphicProvider({ rpcUrl })
-   const balance = Cache.get(`balance:${address}`)
+   const balance = Cache.get(`balance:${network}:${address}`)
    if (balance !== undefined) return balance
    return provider.getBalance(address).then(
       async (bigBalance) => {
          const balance = Number(bigBalance) // convert bigint to number
-         await Cache.set(`balance:${address}`, balance, Config.BALANCE_TTL)
+         await Cache.set(`balance:${network}:${address}`, balance, Config.BALANCE_TTL)
          return Promise.resolve(balance)
       },
       () => {

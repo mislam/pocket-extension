@@ -38,7 +38,7 @@ const copy = () => {
    <div class="view">
       <div v-if="!error">
          <div class="alert warning mb-5">
-            <p>Never disclose your private key! Anyone with your private key can fully control your wallet, including transfering away your funds.</p>
+            <p class="text-sm">Never disclose your private key! Anyone with your private key can fully control your wallet, including transferring your funds.</p>
          </div>
          <div class="relative">
             <textarea class="block w-full font-mono" rows="5" v-model="privateKey" disabled></textarea>
@@ -50,6 +50,7 @@ const copy = () => {
       <div v-else class="alert danger mb-5">
          <p>{{ error }}</p>
       </div>
+      <div class="grow"></div>
       <button type="button" @click="$router.back" class="btn mt-5">Close</button>
    </div>
 </template>

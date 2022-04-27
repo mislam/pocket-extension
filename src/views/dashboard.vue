@@ -3,7 +3,7 @@ import { useStore } from 'vuex'
 import Config from '@/modules/config'
 import Cache from '@/modules/cache'
 import Wallet from '@/modules/wallet'
-import { reactive } from 'vue'
+import { reactive, computed, watch, onBeforeUnmount } from 'vue'
 
 const store = useStore()
 const balance = reactive({
@@ -12,28 +12,51 @@ const balance = reactive({
    usd: 0,
 })
 
-const wallet = store.state.selectedWallet
+const selectedWallet = computed(() => {
+   return store.state.selectedWallet
+})
 
 const currency = (value: number): string => {
    return value.toLocaleString(navigator.language, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-Wallet.getBalance(wallet.address).then(
-   // success
-   (uPokt) => {
-      balance.pokt = Number(uPokt / 1e4) / 1e2 // convert uPokt to Pokt with two decimal points
-      balance.available = true
-      if (balance) {
-         Cache.fetch(Config.PRICE_URL, Config.PRICE_TTL).then((data) => {
-            balance.usd = balance.pokt * data.price
-         })
-      }
-   },
-   // failure
-   () => {
-      balance.available = false
-   },
-)
+const getBalance = () => {
+   Wallet.getBalance(selectedWallet.value.address).then(
+      // success
+      (uPokt) => {
+         balance.pokt = Number(uPokt / 1e4) / 1e2 // convert uPokt to Pokt with two decimal points
+         balance.available = true
+         if (balance) {
+            Cache.fetch(Config.PRICE_URL, Config.PRICE_TTL).then((data) => {
+               balance.usd = balance.pokt * data.price
+            })
+         }
+      },
+      // failure
+      () => {
+         balance.available = false
+      },
+   )
+}
+
+// Initial call to get balance
+getBalance()
+
+// Watch for wallet selection changes
+const unwatch = watch(selectedWallet, () => {
+   getBalance()
+})
+
+// Poll balance every `BALANCE_TTL` seconds
+const fetchTimer = setInterval(() => {
+   getBalance()
+}, Config.BALANCE_TTL * 1000)
+
+// Stop the watch and clear timer before unmount
+onBeforeUnmount(() => {
+   unwatch()
+   clearInterval(fetchTimer)
+})
 </script>
 
 <template>

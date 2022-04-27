@@ -6,11 +6,17 @@ const routeOptions: any = {
    '/onboarding': {
       requiresPassword: true,
    },
+   '/add-wallet': {
+      requiresPassword: {
+         title: 'Add Wallet',
+         description: 'Enter your password to confirm',
+      },
+   },
    '/settings/private-key': {
       requiresPassword: {
          title: 'Show Private Key',
-         description:
-            'Never disclose your private key! Anyone with your private key can fully control your wallet, including transfering away your funds.',
+         description: 'Enter your password to confirm',
+         alert: 'Never disclose your private key! Anyone with your private key can fully control your wallet, including transferring your funds.',
       },
    },
 }
@@ -66,6 +72,7 @@ router.beforeEach((to, from) => {
          params: {
             title: requiresPassword.title || '',
             description: requiresPassword.description || '',
+            alert: requiresPassword.alert || '',
             returnTo: to.path,
          },
       }
