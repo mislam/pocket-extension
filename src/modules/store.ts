@@ -20,7 +20,7 @@ export default createStore<State>({
    state: {
       locked: true,
       passwordHash: '', // SHA-256 hash of the password
-      network: 'mainnet',
+      network: import.meta.env.DEV ? 'testnet' : 'mainnet',
       wallets: [],
    },
    mutations: {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useToast } from 'vue-toastification'
 import Wallet from '@/modules/wallet'
@@ -28,7 +28,7 @@ const limitWalletName = () => {
 const changeWalletName = async () => {
    await Wallet.changeName(selectedWallet.value.address, walletName.value)
    toast.success('Wallet name changed successfully!', {
-      timeout: 3000,
+      timeout: 2000,
    })
 }
 </script>
@@ -38,7 +38,7 @@ const changeWalletName = async () => {
       <div class="mb-5">
          <label class="block mb-1">Change Wallet Name</label>
          <form class="grow flex bg-slate-900 rounded-md p-1 pl-0" @submit.prevent="changeWalletName">
-            <input class="grow text-xl" type="text" v-model="walletName" @keyup="limitWalletName" />
+            <input type="text" class="grow text-xl" v-model="walletName" @keyup="limitWalletName" />
             <button type="submit" class="btn small primary" :disabled="!walletNameIsEdited">Change</button>
          </form>
          <span ref="walletNamePreview" class="absolute text-transparent -z-10 whitespace-nowrap">{{ walletName }}</span>
@@ -58,8 +58,8 @@ const changeWalletName = async () => {
          </router-link>
       </div>
       <div class="mt-5 grid gap-3">
-         <router-link to="/settings/private-key" class="btn primary w-full">Show Private Key</router-link>
-         <router-link to="/settings/remove-wallet" class="btn danger w-full">Remove Wallet</router-link>
+         <router-link to="/settings/private-key" class="btn primary">Show Private Key</router-link>
+         <!-- <router-link to="/settings/remove-wallet" class="btn danger">Remove Wallet</router-link> -->
       </div>
    </div>
 </template>

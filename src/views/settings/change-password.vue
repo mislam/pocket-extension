@@ -42,7 +42,7 @@ const change = async () => {
    await Wallet.changePassword(currentPassword.value, newPassword.value)
    await Wallet.lock()
    toast.success('Password changed successfully! Now you can use the new password to unlock your wallet.', {
-      timeout: 5000,
+      timeout: 4000,
    })
    router.push('/unlock')
 }
@@ -52,21 +52,15 @@ const change = async () => {
    <div class="view flex flex-col">
       <div class="flex justify-center mb-5 text-heading">Change Password</div>
       <form class="grow flex flex-col" @submit.prevent="change">
-         <input class="hidden" type="text" autocomplete="username" />
-         <div class="mb-3">
-            <input class="block w-full" :class="{ 'form-error-input': verifyError }" type="password" v-model="currentPassword" ref="passwordInput" placeholder="Current Password" autocomplete="" />
-         </div>
-         <div class="mb-3">
-            <input class="block w-full" type="password" v-model="newPassword" placeholder="New Password" autocomplete="new-password" />
-         </div>
-         <div>
-            <input class="block w-full" type="password" v-model="confirmPassword" placeholder="Confirm New Password" autocomplete="new-password" />
-         </div>
+         <input type="text" class="hidden" autocomplete="username" />
+         <input type="password" :class="{ 'form-error-input': verifyError }" v-model="currentPassword" ref="passwordInput" placeholder="Current Password" autocomplete="" />
+         <input type="password" class="mt-3" v-model="newPassword" placeholder="New Password" autocomplete="new-password" />
+         <input type="password" class="mt-3" v-model="confirmPassword" placeholder="Confirm New Password" autocomplete="new-password" />
          <div v-if="verifyError || changeError" class="mt-3 form-error-message">{{ verifyError || changeError }}</div>
          <div class="grow"></div>
          <div class="grid grid-cols-2 gap-3">
-            <router-link to="/settings" class="btn block">Cancel</router-link>
-            <button type="submit" class="btn primary w-full" :disabled="!currentPassword || !newPassword || !confirmPassword">Change</button>
+            <button type="button" @click="$router.back" class="btn">Cancel</button>
+            <button type="submit" class="btn primary" :disabled="!currentPassword || !newPassword || !confirmPassword">Change</button>
          </div>
       </form>
    </div>

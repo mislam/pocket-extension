@@ -131,20 +131,20 @@ input[type='password']::placeholder {
    box-shadow: inset 0 10px 15px 0 rgb(0 0 0 / 0.25);
 }
 
-ul.tabs {
+.tabs {
    @apply flex justify-between absolute bottom-0 w-full bg-slate-700 px-4;
    box-shadow: 0 -10px 10px 0px rgb(0 0 0 / 0.15);
 }
 
-ul.tabs li {
+.tabs > a {
    @apply block px-4 py-3.5 border-y-2 border-transparent text-slate-500 hover:cursor-pointer hover:text-slate-300;
 }
 
-ul.tabs li.active {
+.tabs > a.active {
    @apply border-t-slate-300 text-slate-300;
 }
 
-ul.tabs li svg {
+.tabs > a svg {
    @apply fill-current transition-colors;
 }
 

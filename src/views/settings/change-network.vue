@@ -19,8 +19,8 @@ const select = async (network: string) => {
    if (selectedNetwork.value !== network) {
       selectedNetwork.value = network
       await store.dispatch('setNetwork', network)
-      toast.info(`Network is changed to ${capitalize(network)}.`, {
-         timeout: 3000,
+      toast.info(`Network changed to ${capitalize(network)}.`, {
+         timeout: 2000,
       })
    }
 }
@@ -44,8 +44,6 @@ const select = async (network: string) => {
          </div>
       </div>
       <div class="grow"></div>
-      <div class="mt-5">
-         <router-link to="/settings" class="btn block">Go Back</router-link>
-      </div>
+      <button type="button" @click="$router.back" class="btn">Close</button>
    </div>
 </template>

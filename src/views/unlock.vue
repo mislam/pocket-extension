@@ -37,15 +37,15 @@ const unlock = async () => {
    password.value = '' // clear password field
 
    if (returnTo) {
-      router.push({ name: returnTo, params: { ep: encryptedPassword } })
+      router.replace({ name: returnTo, params: { ep: encryptedPassword } })
    } else {
-      router.push('/dashboard')
+      router.replace('/dashboard')
    }
 }
 </script>
 
 <template>
-   <div class="view without-footer">
+   <div class="view without-navigation">
       <div class="flex justify-center mb-5">
          <div class="logo-circle">
             <svg width="96" height="96" viewBox="0 0 96 96" class="-translate-y-1" xmlns="http://www.w3.org/2000/svg">
@@ -58,14 +58,14 @@ const unlock = async () => {
       </div>
       <div class="flex justify-center mb-5 text-xl leading-none">{{ title }}</div>
       <form class="grow flex flex-col" @submit.prevent="unlock">
-         <input class="block w-full" :class="{ 'form-error-input': error }" type="password" v-model="password" ref="passwordInput" placeholder="Enter your password" autocomplete="" />
-         <div v-if="error" class="mt-2 form-error-message">{{ error }}</div>
+         <input type="password" :class="{ 'form-error-input': error }" v-model="password" ref="passwordInput" placeholder="Enter your password" autocomplete="" />
+         <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
          <div class="grow flex items-end">
             <div v-if="description" class="alert warning mt-5">
                <p class="text-sm">{{ description }}</p>
             </div>
          </div>
-         <button type="submit" class="btn primary w-full mt-5" :disabled="!password">{{ buttonText }}</button>
+         <button type="submit" class="btn primary mt-5" :disabled="!password">{{ buttonText }}</button>
       </form>
    </div>
 </template>

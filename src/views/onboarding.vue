@@ -21,7 +21,7 @@ const create = async () => {
    try {
       await Wallet.createNew(encryptedPassword)
       error.value = false
-      router.push('/dashboard')
+      router.replace('/dashboard')
    } catch (e: any) {
       error.value = e.message
    }
@@ -30,7 +30,7 @@ const create = async () => {
 const importWallet = async () => {
    try {
       await Wallet.importFromPrivateKey(encryptedPassword, privateKeyInput.value)
-      router.push('/dashboard')
+      router.replace('/dashboard')
    } catch (e: any) {
       error.value = e.message
    }
@@ -38,7 +38,7 @@ const importWallet = async () => {
 </script>
 
 <template>
-   <div class="view without-footer">
+   <div class="view without-navigation">
       <!-- Create -->
       <div class="grow flex flex-col" v-if="'create' === method">
          <div class="flex justify-center mb-5 text-3xl leading-none">
@@ -53,22 +53,20 @@ const importWallet = async () => {
          <div class="flex justify-center mb-5 text-subheading text-center">Now let's set up a secure wallet for you.</div>
          <div v-if="error" class="mb-5 form-error-message">{{ error }}</div>
          <div class="grow"></div>
-         <button type="button" @click="create" class="btn primary w-full">Create a new wallet</button>
-         <button type="button" @click="switchMethod('import')" class="btn w-full mt-3">I already have a wallet</button>
+         <button type="button" @click="create" class="btn primary">Create a new wallet</button>
+         <button type="button" @click="switchMethod('import')" class="btn mt-3">I already have a wallet</button>
       </div>
       <!-- Import -->
       <div class="grow flex flex-col" v-if="'import' === method">
          <div class="flex justify-center mb-3 text-heading">Import Your Wallet</div>
          <div class="flex justify-center mb-5 text-subheading text-center">Import an existing wallet with your 128-digit private key.</div>
          <form class="grow flex flex-col" @submit.prevent="importWallet">
-            <div>
-               <textarea class="block w-full font-mono" rows="5" v-model="privateKeyInput" placeholder="Enter your private key"></textarea>
-            </div>
+            <textarea class="font-mono" rows="5" v-model="privateKeyInput" placeholder="Enter your private key"></textarea>
             <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
             <div class="grow"></div>
-            <button type="submit" class="btn primary w-full mt-5" :disabled="!privateKeyInput.length">Import Wallet</button>
+            <button type="submit" class="btn primary mt-5" :disabled="!privateKeyInput.length">Import Wallet</button>
          </form>
-         <button type="button" @click="switchMethod('create')" class="btn w-full mt-3">Or, Create a new wallet</button>
+         <button type="button" @click="switchMethod('create')" class="btn mt-3">Or, Create a new wallet</button>
       </div>
    </div>
 </template>

@@ -50,8 +50,6 @@ const copy = () => {
       <div v-else class="alert danger mb-5">
          <p>{{ error }}</p>
       </div>
-      <div class="mt-5">
-         <router-link to="/settings" class="btn block">Go Back</router-link>
-      </div>
+      <button type="button" @click="$router.back" class="btn mt-5">Close</button>
    </div>
 </template>

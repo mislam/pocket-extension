@@ -27,7 +27,7 @@ const create = async () => {
 </script>
 
 <template>
-   <div class="view without-footer flex flex-col">
+   <div class="view without-navigation flex flex-col">
       <div class="flex justify-center mb-5">
          <div class="logo-circle">
             <svg width="96" height="96" viewBox="0 0 96 96" class="-translate-y-1" xmlns="http://www.w3.org/2000/svg">
@@ -39,16 +39,12 @@ const create = async () => {
       <div class="flex justify-center mb-3 text-heading">Create a password</div>
       <div class="flex justify-center mb-5 text-subheading text-center">You will use it to unlock your secure wallet.</div>
       <form class="grow flex flex-col" @submit.prevent="create">
-         <input class="hidden" type="text" autocomplete="username" />
-         <div class="mb-3">
-            <input class="block w-full" type="password" v-model="password" ref="passwordInput" placeholder="Password" autocomplete="new-password" />
-         </div>
-         <div>
-            <input class="block w-full" type="password" v-model="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" />
-         </div>
+         <input type="text" class="hidden" autocomplete="username" />
+         <input type="password" v-model="password" ref="passwordInput" placeholder="Password" autocomplete="new-password" />
+         <input type="password" class="mt-3" v-model="confirmPassword" placeholder="Confirm Password" autocomplete="new-password" />
          <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
          <div class="grow"></div>
-         <button type="submit" class="btn primary w-full mt-5" :disabled="!password || !confirmPassword">Create</button>
+         <button type="submit" class="btn primary mt-5" :disabled="!password || !confirmPassword">Create</button>
       </form>
    </div>
 </template>
