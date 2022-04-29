@@ -1,8 +1,12 @@
 {
    "editor.defaultFormatter": "esbenp.prettier-vscode",
    "editor.formatOnSave": true,
-   "editor.rulers": [100],
    "editor.wordWrap": "wordWrapColumn",
+   "editor.rulers": [100],
    "editor.wordWrapColumn": 100,
+   "[vue]": {
+      "editor.rulers": [200],
+      "editor.wordWrapColumn": 200
+   },
    "css.customData": ["./.vscode/tailwind.css-data.json"]
 }
