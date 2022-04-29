@@ -1,26 +1,51 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+export interface RawTransactionResponse {
+   logs: string | null
+   txhash: string
+}
 export interface TransactionResponse {
-   code?: number
-   codeSpace?: string
-   data?: string
-   hash: string
-   height: number
-   info?: string
-   rawLog?: string
-   timestamp?: string
-   tx?: string
+   logs: string | null
+   txHash: string
 }
 
 export interface Block {}
 
-export interface GetNodesOptions {}
+export interface GetNodesOptions {
+   stakingStatus?: StakingStatus
+   jailedStatus?: JailedStatus
+   blockHeight?: number
+   blockchain?: string
+   page?: number
+   perPage?: number
+   timeout?: number
+}
 
-export interface GetAppOptions {}
+export interface GetAppsOptions {
+   stakingStatus?: StakingStatus
+   blockHeight?: number
+   blockchain?: string
+   page?: number
+   perPage?: number
+   timeout?: number
+}
+
+export interface GetAccountWithTransactionsOptions {
+   received?: boolean
+   page?: number
+   perPage?: number
+   timeout?: number
+}
 
 export enum StakingStatus {
    Unstaked = 0,
    Unstaking = 1,
    Staked = 2,
+}
+
+export enum JailedStatus {
+   NA = '',
+   Jailed = 1,
+   Unjailed = 2,
 }
 
 export interface App {
@@ -33,6 +58,13 @@ export interface App {
    status: StakingStatus
 }
 
+export interface PaginatedApp {
+   apps: App[]
+   page: number
+   totalPages: number
+   perPage: number
+}
+
 export interface Node {
    address: string
    chains: string[]
@@ -42,6 +74,13 @@ export interface Node {
    stakedTokens: string
    status: StakingStatus
    unstakingTime: string
+}
+
+export interface PaginatedNode {
+   nodes: Node[]
+   page: number
+   totalPages: number
+   perPage: number
 }
 
 export interface Account {
@@ -133,4 +172,4 @@ export interface RelayResponse {
    readonly relayRequest: RelayRequest
 }
 
-export {}
+export * from './tx-request'

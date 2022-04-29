@@ -3,9 +3,13 @@ import {
    AccountWithTransactions,
    App,
    Block,
-   GetAppOptions,
+   GetAccountWithTransactionsOptions,
+   GetAppsOptions,
    GetNodesOptions,
    Node,
+   PaginatedApp,
+   PaginatedNode,
+   RawTxRequest,
    TransactionResponse,
 } from '../types'
 
@@ -15,21 +19,31 @@ export abstract class AbstractProvider {
    abstract getTransactionCount(address: string | Promise<string>): Promise<number>
    abstract getType(address: string | Promise<string>): Promise<'node' | 'app' | 'account'>
    // Txs
-   abstract sendTransaction(
-      signerAddress: string | Promise<string>,
-      signedTransaction: string | Promise<string>,
-   ): Promise<TransactionResponse>
+   abstract sendTransaction(transaction: RawTxRequest): Promise<TransactionResponse>
    // Network
    abstract getBlock(blockNumber: number): Promise<Block>
    abstract getTransaction(transactionHash: string): Promise<TransactionResponse>
    abstract getBlockNumber(): Promise<number>
-   abstract getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]>
-   abstract getNode(address: string | Promise<string>, options: GetNodesOptions): Promise<Node>
-   abstract getApps(getAppOption: GetAppOptions): Promise<App[]>
-   abstract getApp(address: string | Promise<string>, options: GetAppOptions): Promise<App>
+   abstract getNodes(getNodesOptions: GetNodesOptions): Promise<PaginatedNode>
+   abstract getNode({
+      address,
+      blockHeight,
+   }: {
+      address: string | Promise<string>
+      blockHeight?: number
+   }): Promise<Node>
+   abstract getApps(getAppOption: GetAppsOptions): Promise<PaginatedApp>
+   abstract getApp({
+      address,
+      blockHeight,
+   }: {
+      address: string | Promise<string>
+      blockHeight?: number
+   }): Promise<App>
    abstract getAccount(address: string | Promise<string>): Promise<Account>
    abstract getAccountWithTransactions(
       address: string | Promise<string>,
+      options: GetAccountWithTransactionsOptions,
    ): Promise<AccountWithTransactions>
 
    // TODO: Add methods for params/requestChallenge

@@ -1,9 +1,10 @@
 import Sodium from 'libsodium-wrappers'
-import { toUint8Array, fromUint8Array } from 'hex-lite'
-import { AbstractProvider } from '../provider/abstract-provider'
+import { Buffer } from 'buffer'
+import { AbstractProvider } from '../abstract-provider'
 import { TransactionResponse } from '../types'
 import { AbstractSigner, TransactionRequest } from './abstract-signer'
 import { KeyManager } from './key-manager'
+import { getAddressFromPublicKey, publicKeyFromPrivate } from '../utils'
 
 /**
  * A Wallet is a minimal wallet implementation that lets you import accounts
@@ -40,6 +41,21 @@ export class Wallet implements AbstractSigner {
          keyManager,
          isSigner: true,
       })
+   }
+
+   /**
+    * Instanciates a new Wallet from a valid ED25519 private key.
+    * @param {string} privateKey - The private key to use to instanciate the new Key manager.
+    * @returns {Wallet} - A new Key Manager instance with the account attached.
+    * */
+   static async fromPrivateKey(privateKey: string): Promise<Wallet> {
+      await Sodium.ready
+      const publicKey = publicKeyFromPrivate(privateKey)
+      const addr = await getAddressFromPublicKey(publicKey)
+
+      const keyManager = new KeyManager({ address: addr, privateKey, publicKey })
+
+      return new Wallet({ keyManager, isSigner: true })
    }
 
    /**
@@ -93,11 +109,7 @@ export class Wallet implements AbstractSigner {
    async sendTransaction(
       signedTransaction: string | Promise<string>,
    ): Promise<TransactionResponse> {
-      if (!this.provider) {
-         throw new Error('No provider')
-      }
-
-      return this.provider.sendTransaction(this.keyManager.getAddress(), await signedTransaction)
+      throw new Error('not implemented')
    }
 
    /**
@@ -107,12 +119,12 @@ export class Wallet implements AbstractSigner {
     * */
    async sign(payload: string): Promise<string> {
       await Sodium.ready
-      return fromUint8Array(
+      return Buffer.from(
          Sodium.crypto_sign_detached(
-            toUint8Array(payload),
-            toUint8Array(this.keyManager.getPrivateKey()),
+            Buffer.from(payload, 'hex'),
+            Buffer.from(this.keyManager.getPrivateKey(), 'hex'),
          ),
-      )
+      ).toString('hex')
    }
 
    /**
@@ -121,8 +133,6 @@ export class Wallet implements AbstractSigner {
     * @returns {string} - The signed transaction.
     * */
    async signTransaction(transaction: TransactionRequest): Promise<string> {
-      await Sodium.ready
-
-      throw new Error('Not implemented, needs transaction builder')
+      throw new Error('not implemented')
    }
 }

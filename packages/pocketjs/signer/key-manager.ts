@@ -1,12 +1,22 @@
-import debug from 'debug'
 import Sodium from 'libsodium-wrappers'
-import { toUint8Array, fromUint8Array } from 'hex-lite'
+import { Buffer } from 'buffer'
+import debug from 'debug'
 import { getAddressFromPublicKey, publicKeyFromPrivate } from '../utils'
 
 interface Account {
    address: string
    publicKey: string
    privateKey: string
+}
+
+const HEX_REGEX = /^[0-9a-fA-F]+$/
+// Scrypt-related constants
+const SCRYPT_HASH_LENGTH = 32
+const SCRYPT_OPTIONS = {
+   N: 32768,
+   r: 8,
+   p: 1,
+   maxmem: 4294967290,
 }
 
 /**
@@ -40,9 +50,12 @@ export class KeyManager {
     * */
    async sign(payload: string): Promise<string> {
       await Sodium.ready
-      return fromUint8Array(
-         Sodium.crypto_sign_detached(toUint8Array(payload), toUint8Array(this.getPrivateKey())),
-      )
+      return Buffer.from(
+         Sodium.crypto_sign_detached(
+            Buffer.from(payload, 'hex'),
+            Buffer.from(this.getPrivateKey(), 'hex'),
+         ),
+      ).toString('hex')
    }
 
    /**
@@ -52,8 +65,8 @@ export class KeyManager {
    static async createRandom(): Promise<KeyManager> {
       await Sodium.ready
       const keypair = Sodium.crypto_sign_keypair()
-      const privateKey = fromUint8Array(keypair.privateKey)
-      const publicKey = fromUint8Array(keypair.publicKey)
+      const privateKey = Buffer.from(keypair.privateKey).toString('hex')
+      const publicKey = Buffer.from(keypair.publicKey).toString('hex')
       const addr = await getAddressFromPublicKey(publicKey)
 
       const logger = debug('KeyManager')

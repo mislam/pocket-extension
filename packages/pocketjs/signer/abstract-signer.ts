@@ -1,4 +1,4 @@
-import { AbstractProvider } from '../provider/abstract-provider'
+import { AbstractProvider } from '../abstract-provider'
 import { TransactionResponse } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

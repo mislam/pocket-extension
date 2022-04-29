@@ -1,6 +1,5 @@
 import debug from 'debug'
 import AbortController from 'abort-controller'
-import fetch from 'isomorphic-unfetch'
 import { hrtime } from './hrtime'
 import {
    Account,
@@ -9,17 +8,23 @@ import {
    Block,
    DispatchRequest,
    DispatchResponse,
-   GetAppOptions,
+   GetAccountWithTransactionsOptions,
+   GetAppsOptions,
    GetNodesOptions,
    Node,
+   PaginatedApp,
+   PaginatedNode,
+   RawTransactionResponse,
+   RawTxRequest,
    SessionHeader,
    TransactionResponse,
 } from '../types'
-import { AbstractProvider } from './abstract-provider'
+import { AbstractProvider } from '../abstract-provider'
 import { DispatchersFailureError, RelayFailureError, TimeoutError } from './errors'
 import { V1RpcRoutes } from './routes'
 
 const DEFAULT_TIMEOUT = 1000
+const fetch = window.fetch
 
 /**
  * An IsomorphicProvider lets you query data from the chain and send relays to the network.
@@ -77,7 +82,6 @@ export class IsomorphicProvider implements AbstractProvider {
          method: 'POST',
          signal: controller.signal as AbortSignal,
          headers: {
-            Accept: 'application/json',
             'Content-Type': 'application/json',
          },
          body: JSON.stringify(body),
@@ -107,10 +111,9 @@ export class IsomorphicProvider implements AbstractProvider {
       const res = await this.perform({
          route: V1RpcRoutes.QueryBalance,
          body: { address: await address },
-         retryAttempts: 3,
       })
-      const { balance } = await res.json()
-      return BigInt(balance)
+      const { balance } = (await res.json()) as { balance: number }
+      return BigInt(balance.toString())
    }
 
    /**
@@ -167,22 +170,22 @@ export class IsomorphicProvider implements AbstractProvider {
     * @param {TransactionRequest} transaction - The transaction to sign, formatted as a `TransactionRequest`.
     * @returns {TransactionResponse} - The network's response to the transaction.
     * */
-   async sendTransaction(
-      signerAddress: string | Promise<string>,
-      signedTransaction: string | Promise<string>,
-   ): Promise<TransactionResponse> {
+   async sendTransaction(transaction: RawTxRequest): Promise<TransactionResponse> {
       const res = await this.perform({
          route: V1RpcRoutes.ClientRawTx,
-         body: { address: await signerAddress, txHex: await signedTransaction },
+         body: { ...transaction.toJSON() },
       })
 
-      const transactionResponse = (await res.json()) as TransactionResponse
+      const transactionResponse = (await res.json()) as RawTransactionResponse
 
-      if (!('hash' in transactionResponse)) {
+      if (!transactionResponse?.txhash) {
          throw new Error('RPC Error')
       }
 
-      return transactionResponse
+      return {
+         logs: transactionResponse.logs,
+         txHash: transactionResponse.txhash,
+      }
    }
 
    /**
@@ -247,10 +250,62 @@ export class IsomorphicProvider implements AbstractProvider {
    /**
     * Fetches nodes active from the network with the options provided.
     * @param {GetNodesOptions} getNodesOptions - the options to pass in to the query.
-    * @returns {Node[]} - An array with the nodes requested and their information.
+    * @returns {PaginatedNode} - An array with the nodes requested and their information.
     * */
-   getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]> {
-      throw new Error('Not implemented')
+   async getNodes(
+      GetNodesOptions: GetNodesOptions = {
+         blockHeight: 0,
+         page: 1,
+         perPage: 100,
+      },
+   ): Promise<PaginatedNode> {
+      const { blockHeight: height } = GetNodesOptions
+
+      const res = await this.perform({
+         route: V1RpcRoutes.QueryApps,
+         body: {
+            height,
+            opts: {
+               page: GetNodesOptions.page ?? 1,
+               per_page: GetNodesOptions.perPage ?? 100,
+               ...(GetNodesOptions?.blockchain ? { blockchain: GetNodesOptions.blockchain } : {}),
+               ...(GetNodesOptions?.stakingStatus
+                  ? { staking_status: GetNodesOptions.stakingStatus }
+                  : {}),
+               ...(GetNodesOptions?.jailedStatus
+                  ? { jailed_status: GetNodesOptions.jailedStatus }
+                  : {}),
+            },
+         },
+         ...(GetNodesOptions?.timeout ? { timeout: GetNodesOptions.timeout } : {}),
+      })
+
+      const parsedRes = (await res.json()) as any
+
+      if (!('result' in parsedRes)) {
+         throw new Error('Failed to get apps')
+      }
+
+      const nodes = parsedRes.result.map((node: any) => {
+         const { address, chains, jailed, public_key, staked_tokens, status, service_url } = node
+
+         return {
+            address,
+            chains,
+            publicKey: public_key,
+            jailed,
+            stakedTokens: staked_tokens ?? '0',
+            status,
+            serviceUrl: service_url,
+         } as Node
+      })
+
+      return {
+         nodes,
+         page: GetNodesOptions.page,
+         perPage: GetNodesOptions.perPage,
+         totalPages: parsedRes.total_pages,
+      } as PaginatedNode
    }
 
    /**
@@ -259,10 +314,19 @@ export class IsomorphicProvider implements AbstractProvider {
     * @param {GetNodesOptions} getNodesOptions - The options to pass in to the query.
     * @returns {Node} - The node requested and its information.
     * */
-   async getNode(address: string | Promise<string>): Promise<Node> {
+   async getNode({
+      address,
+      blockHeight,
+   }: {
+      address: string | Promise<string>
+      blockHeight?: number
+   }): Promise<Node> {
       const res = await this.perform({
          route: V1RpcRoutes.QueryNode,
-         body: { address: await address },
+         body: {
+            address: await address,
+            ...(blockHeight ? { height: blockHeight } : {}),
+         },
       })
       const node = (await res.json()) as any
 
@@ -289,8 +353,57 @@ export class IsomorphicProvider implements AbstractProvider {
     * @param {GetAppOptions} getAppOptions - The options to pass in to the query.
     * @returns {App} - An array with the apps requested and their information.
     * */
-   getApps(getAppOption: GetAppOptions): Promise<App[]> {
-      throw new Error('Not implemented')
+   async getApps(
+      GetAppsOptions: GetAppsOptions = {
+         blockHeight: 0,
+         page: 1,
+         perPage: 100,
+      },
+   ): Promise<PaginatedApp> {
+      const { blockHeight: height } = GetAppsOptions
+
+      const res = await this.perform({
+         route: V1RpcRoutes.QueryApps,
+         body: {
+            height,
+            opts: {
+               page: GetAppsOptions.page ?? 1,
+               per_page: GetAppsOptions.perPage ?? 100,
+               ...(GetAppsOptions?.stakingStatus
+                  ? { staking_status: GetAppsOptions.stakingStatus }
+                  : {}),
+               ...(GetAppsOptions?.blockchain ? { blockchain: GetAppsOptions.blockchain } : {}),
+            },
+         },
+         ...(GetAppsOptions?.timeout ? { timeout: GetAppsOptions.timeout } : {}),
+      })
+
+      const parsedRes = (await res.json()) as any
+
+      if (!('result' in parsedRes)) {
+         throw new Error('Failed to get apps')
+      }
+
+      const apps = parsedRes.result.map((app: any) => {
+         const { address, chains, jailed, max_relays, public_key, staked_tokens, status } = app
+
+         return {
+            address,
+            chains,
+            publicKey: public_key,
+            jailed,
+            maxRelays: max_relays ?? '',
+            stakedTokens: staked_tokens ?? '0',
+            status,
+         } as App
+      })
+
+      return {
+         apps,
+         page: GetAppsOptions.page,
+         perPage: GetAppsOptions.perPage,
+         totalPages: parsedRes.total_pages,
+      } as PaginatedApp
    }
 
    /**
@@ -299,11 +412,21 @@ export class IsomorphicProvider implements AbstractProvider {
     * @param {GetAppOptions} getAppOptions - The options to pass in to the query.
     * @returns {App} - The app requested and its information.
     * */
-   async getApp(address: string | Promise<string>, options: GetAppOptions): Promise<App> {
+   async getApp({
+      address,
+      blockHeight,
+   }: {
+      address: string | Promise<string>
+      blockHeight?: number
+   }): Promise<App> {
       const res = await this.perform({
          route: V1RpcRoutes.QueryApp,
-         body: { address: await address },
+         body: {
+            address: await address,
+            ...(blockHeight ? { height: blockHeight } : {}),
+         },
       })
+
       const app = (await res.json()) as any
 
       if (!('chains' in app)) {
@@ -317,8 +440,8 @@ export class IsomorphicProvider implements AbstractProvider {
          chains,
          publicKey: public_key,
          jailed,
-         maxRelays: max_relays ?? 0,
-         stakedTokens: staked_tokens ?? 0,
+         maxRelays: max_relays ?? '',
+         stakedTokens: staked_tokens ?? '0',
          status,
       } as App
    }
@@ -355,6 +478,10 @@ export class IsomorphicProvider implements AbstractProvider {
     * */
    async getAccountWithTransactions(
       address: string | Promise<string>,
+      options: GetAccountWithTransactionsOptions = {
+         page: 1,
+         perPage: 100,
+      },
    ): Promise<AccountWithTransactions> {
       const accountRes = await this.perform({
          route: V1RpcRoutes.QueryAccount,
@@ -362,7 +489,7 @@ export class IsomorphicProvider implements AbstractProvider {
       })
       const txsRes = await this.perform({
          route: V1RpcRoutes.QueryAccountTxs,
-         body: { address: await address },
+         body: { address: await address, ...options },
       })
       const account = (await accountRes.json()) as any
       const txs = (await txsRes.json()) as any
@@ -375,13 +502,13 @@ export class IsomorphicProvider implements AbstractProvider {
       }
 
       const { coins, public_key } = account
-      const { total_count, txs: transactions } = txs
+      const { total_txs, txs: transactions } = txs
 
       return {
          address: await address,
          balance: coins[0]?.amount ?? 0,
          publicKey: public_key,
-         totalCount: total_count,
+         totalCount: total_txs,
          transactions: transactions,
       }
    }
