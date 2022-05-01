@@ -11,6 +11,7 @@
 -  [x] Replace some of the `router.push` with `router.replace` for an optimized history
 -  [x] Use transition between views
 -  [ ] Blur background when sidebar opens
+-  [ ] Use same base style/class for all input and textarea
 
 ## New Features
 

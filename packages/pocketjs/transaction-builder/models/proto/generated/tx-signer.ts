@@ -1,10 +1,6 @@
 /* eslint-disable */
 import Long from 'long'
-import * as proto from 'protobufjs/minimal.js'
-
-// @ts-ignore
-const { util, configure, Reader, Writer } = proto.default
-
+import { util, configure, Reader, Writer } from 'protobufjs/minimal'
 import { Any } from './google/protobuf/any'
 
 export const protobufPackage = 'pocketjs'

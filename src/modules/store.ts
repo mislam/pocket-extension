@@ -2,6 +2,8 @@ import { createStore } from 'vuex'
 import Storage from '@/modules/storage'
 import Wallet from '@/modules/wallet'
 
+type ChainID = 'mainnet' | 'testnet' | 'localnet'
+
 interface Wallet {
    name: string // A meaningful name set by the user
    address: string // Wallet address
@@ -11,7 +13,7 @@ interface Wallet {
 interface State {
    locked: boolean
    passwordHash: string
-   network: string
+   network: ChainID
    wallets: Wallet[]
    selectedWallet?: Wallet
 }

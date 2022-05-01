@@ -37,9 +37,11 @@ const changeWalletName = async () => {
    <div class="view">
       <div class="mb-5">
          <label class="block mb-1">Change Wallet Name</label>
-         <form class="grow flex bg-slate-900 rounded-md p-1 pl-0" @submit.prevent="changeWalletName">
-            <input type="text" class="grow text-xl" v-model="walletName" @keyup="limitWalletName" />
-            <button type="submit" class="btn small primary" :disabled="!walletNameIsEdited">Change</button>
+         <form @submit.prevent="changeWalletName">
+            <div class="input-group">
+               <input type="text" v-model="walletName" @keyup="limitWalletName" />
+               <button type="submit" class="btn small primary" :disabled="!walletNameIsEdited">Change</button>
+            </div>
          </form>
          <span ref="walletNamePreview" class="absolute text-transparent -z-10 whitespace-nowrap">{{ walletName }}</span>
       </div>

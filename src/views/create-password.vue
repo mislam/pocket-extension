@@ -6,9 +6,9 @@ import Wallet from '@/modules/wallet'
 const router = useRouter()
 const password = ref<string>('')
 const confirmPassword = ref<string>('')
-const passwordInput = ref<any>(null)
 const error = ref<boolean | string>(false)
 
+const passwordInput = ref<any>(null)
 onMounted(() => {
    // autofocus on the input field
    passwordInput.value.focus()
@@ -37,7 +37,7 @@ const create = async () => {
          </div>
       </div>
       <div class="flex justify-center mb-3 text-heading">Create a password</div>
-      <div class="flex justify-center mb-5 text-subheading text-center">You will use it to unlock your secure wallet.</div>
+      <div class="flex justify-center mb-5 text-subheading text-center">You will use it to unlock your secure wallet</div>
       <form class="grow flex flex-col" @submit.prevent="create">
          <input type="text" class="hidden" autocomplete="username" />
          <input type="password" v-model="password" ref="passwordInput" placeholder="Password" autocomplete="new-password" />

@@ -80,7 +80,7 @@ export class MsgProtoAppStake extends TxMsg {
 
       return Any.fromJSON({
          typeUrl: this.KEY,
-         value: MsgProtoStake.encode(data).finish().toString('base64'),
+         value: Buffer.from(MsgProtoStake.encode(data).finish()).toString('base64'),
       })
    }
 }

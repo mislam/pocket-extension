@@ -19,6 +19,15 @@ const routeOptions: any = {
          alert: 'Never disclose your private key! Anyone with your private key can fully control your wallet, including transferring your funds.',
       },
    },
+   '/send-tx-result': {
+      requiresPassword: {
+         title: 'Send POKT',
+         description:
+            'You are about to send <span class="font-mono" style="color:#f59e0b">{{amount}}</span> POKT from your wallet. Enter your password to confirm this transaction.',
+         cancelable: true,
+      },
+      requiredParams: ['address', 'amount', 'memo'],
+   },
 }
 
 const routes: any = [{ path: '/', redirect: '/dashboard' }]
@@ -60,21 +69,26 @@ router.beforeEach((to, from) => {
    // if password is set and routing to the unlock route, do nothing (stay there)
    else if (to.path === '/unlock') {
       // if already unlocked and not requesting password verification, go to dashboard
-      if (!store.state.locked && !to.params.returnTo) {
+      if (!store.state.locked && !to.params.returnPath) {
          return '/dashboard'
       }
    }
    // if the route requires password and the encryptedPassword is not passed, go to unlock
    else if (to.meta.requiresPassword && !to.params.ep) {
-      const requiresPassword: any = to.meta.requiresPassword
+      // if any of the required params is missing, go back to dashboard
+      const requiredParams: any = to.meta.requiredParams || []
+      for (const key of requiredParams) {
+         if (!to.params.hasOwnProperty(key)) {
+            return '/dashboard'
+         }
+      }
+      const options = JSON.stringify(to.meta.requiresPassword)
+      const payload = JSON.stringify(to.params)
+      const returnPath = to.path
+      const params = Object.assign({}, { options, returnPath, payload })
       return {
          name: '/unlock',
-         params: {
-            title: requiresPassword.title || '',
-            description: requiresPassword.description || '',
-            alert: requiresPassword.alert || '',
-            returnTo: to.path,
-         },
+         params,
       }
    }
    // if no wallet has been created/imported yet, go to onboarding

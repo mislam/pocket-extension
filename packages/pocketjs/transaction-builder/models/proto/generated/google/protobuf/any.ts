@@ -1,8 +1,5 @@
 /* eslint-disable */
-import * as proto from 'protobufjs/minimal.js'
-
-// @ts-ignore
-const { Reader, Writer } = proto.default
+import { Reader, Writer } from 'protobufjs/minimal'
 
 export const protobufPackage = 'google.protobuf'
 

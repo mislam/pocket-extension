@@ -1,5 +1,6 @@
 import { IsomorphicProvider } from '@pocketjs/provider'
 import { KeyManager } from '@pocketjs/signer'
+import { TransactionBuilder } from '@pocketjs/transaction-builder'
 import Config from '@/modules/config'
 import Cache from '@/modules/cache'
 import { decrypt, encrypt, sha256 } from '@/modules/encryptor'
@@ -213,13 +214,46 @@ const getBalance = async (address: string): Promise<number> => {
    return provider.getBalance(address).then(
       async (bigBalance) => {
          const balance = Number(bigBalance) // convert bigint to number
-         await Cache.set(`balance:${network}:${address}`, balance, Config.BALANCE_TTL)
+         await Cache.set(`balance:${network}:${address}`, balance, 1)
          return Promise.resolve(balance)
       },
       () => {
          return Promise.reject()
       },
    )
+}
+
+const send = async (
+   encryptedPassword: string,
+   address: string,
+   amount: string,
+   memo: string,
+): Promise<{ error: string | false; response?: any }> => {
+   const privateKey = await getPrivateKey(encryptedPassword, store.state.selectedWallet)
+   if (!privateKey) return { error: 'Oops! Your wallet appears to be corrupted or invalid.' }
+
+   const network = store.state.network
+   const rpcUrl = Config.getRpcUrl(network)
+   const provider = new IsomorphicProvider({ rpcUrl })
+   const signer = await KeyManager.fromPrivateKey(privateKey)
+   const transactionBuilder = new TransactionBuilder({
+      provider,
+      signer,
+      chainID: network,
+   })
+   const txMsg = transactionBuilder.send({
+      fromAddress: signer.getAddress(),
+      toAddress: address,
+      amount: String(Number(amount) * 1e6), // convert pokt to uPokt
+   })
+   const response = await transactionBuilder.submit({
+      memo,
+      txMsg,
+   })
+   return {
+      error: false,
+      response,
+   }
 }
 
 export default {
@@ -236,4 +270,5 @@ export default {
    importFromPrivateKey,
    changeName,
    getBalance,
+   send,
 }

@@ -50,7 +50,7 @@ const importWallet = async () => {
             </div>
          </div>
          <div class="flex justify-center mb-3 text-3xl leading-none">Welcome</div>
-         <div class="flex justify-center mb-5 text-subheading text-center">Now let's set up a secure wallet for you.</div>
+         <div class="flex justify-center mb-5 text-subheading text-center">Now let's set up a secure wallet for you</div>
          <div v-if="error" class="mb-5 text-center form-error-message">{{ error }}</div>
          <div class="grow"></div>
          <button type="button" @click="createWallet" class="btn primary">Create a new wallet</button>
@@ -61,7 +61,7 @@ const importWallet = async () => {
          <div class="flex justify-center mb-3 text-heading">Import Your Wallet</div>
          <div class="flex justify-center mb-5 text-subheading text-center">Import an existing wallet with your 128-digit private key.</div>
          <form class="grow flex flex-col" @submit.prevent="importWallet">
-            <textarea class="font-mono" rows="5" v-model="privateKeyInput" placeholder="Enter your private key"></textarea>
+            <textarea class="font-mono text-base" rows="5" v-model="privateKeyInput" placeholder="Enter your private key"></textarea>
             <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
             <div class="grow"></div>
             <button type="submit" class="btn primary mt-5" :disabled="!privateKeyInput.length">Import Wallet</button>

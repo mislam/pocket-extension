@@ -92,7 +92,7 @@ export class MsgProtoNodeStakeTx extends TxMsg {
 
       return Any.fromJSON({
          typeUrl: this.KEY,
-         value: MsgProtoNodeStake.encode(data).finish().toString('base64'),
+         value: Buffer.from(MsgProtoNodeStake.encode(data).finish()).toString('base64'),
       })
    }
 }

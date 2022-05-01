@@ -38,11 +38,16 @@ textarea {
 }
 
 input {
-   @apply px-2 py-1;
+   @apply px-2 py-1.5;
 }
 
 textarea {
-   @apply px-4 py-3;
+   @apply px-3 py-2;
+}
+
+input[type='text'],
+textarea {
+   @apply text-lg;
 }
 
 input[type='password'] {
@@ -54,6 +59,18 @@ input[type='password'] {
 
 input[type='password']::placeholder {
    @apply text-base -translate-y-1.5;
+}
+
+.input-group {
+   @apply flex items-center bg-slate-900 rounded-md;
+}
+
+.input-group input {
+   @apply grow;
+}
+
+.input-group button {
+   @apply m-1.5;
 }
 
 .btn {
@@ -131,6 +148,11 @@ input[type='password']::placeholder {
    box-shadow: inset 0 10px 15px 0 rgb(0 0 0 / 0.25);
 }
 
+.logo-circle.small {
+   @apply p-2.5;
+   box-shadow: inset 0 5px 8px 0 rgb(0 0 0 / 0.25);
+}
+
 .tabs {
    @apply flex justify-between absolute bottom-0 w-full bg-slate-700 px-4;
    box-shadow: 0 -10px 10px 0px rgb(0 0 0 / 0.15);
@@ -187,6 +209,14 @@ input[type='password']::placeholder {
 
 .alert {
    @apply px-4 py-3 rounded-md border;
+}
+
+.alert.success {
+   @apply bg-green-500/30 border-green-500/60;
+}
+
+.alert.info {
+   @apply bg-blue-500/30 border-blue-500/60;
 }
 
 .alert.warning {

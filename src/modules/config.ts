@@ -5,6 +5,8 @@ const keys: any = {
    PRICE_URL: String,
    BALANCE_TTL: Number,
    PRICE_TTL: Number,
+   DEFAULT_BASE_FEE: Number,
+   TX_CONF_ETA: Number,
 }
 
 const Config: any = {}

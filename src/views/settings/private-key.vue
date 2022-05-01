@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onBeforeMount } from 'vue'
 import { useStore } from 'vuex'
 import { useToast } from 'vue-toastification'
 import Wallet from '@/modules/wallet'
@@ -11,19 +11,25 @@ const encryptedPassword = props.ep || ''
 const store = useStore()
 const toast = useToast()
 const privateKey = ref<string>('')
-const error = ref<boolean | string>(false)
-const copyButtonText = ref<string>('Copy')
+const error = ref<boolean>(false)
 
-if (encryptedPassword) {
-   Wallet.getPrivateKey(encryptedPassword, store.state.selectedWallet).then((derivedPrivateKey) => {
-      if (derivedPrivateKey) {
-         privateKey.value = derivedPrivateKey
-         error.value = false
-      } else {
-         privateKey.value = ''
-         error.value = 'Oops! Your wallet appears to be corrupted or invalid.'
-      }
-   })
+onBeforeMount(async () => {
+   await getPrivateKey()
+})
+
+const getPrivateKey = async () => {
+   if (!encryptedPassword) return
+   const derivedPrivateKey = await Wallet.getPrivateKey(encryptedPassword, store.state.selectedWallet)
+   if (derivedPrivateKey) {
+      privateKey.value = derivedPrivateKey
+      error.value = false
+   } else {
+      privateKey.value = ''
+      error.value = true
+      toast.error('Oops! Your wallet appears to be corrupted or invalid.', {
+         timeout: 5000,
+      })
+   }
 }
 
 const copy = () => {
@@ -41,14 +47,11 @@ const copy = () => {
             <p class="text-sm">Never disclose your private key! Anyone with your private key can fully control your wallet, including transferring your funds.</p>
          </div>
          <div class="relative">
-            <textarea class="block w-full font-mono" rows="5" v-model="privateKey" disabled></textarea>
-            <div class="absolute bottom-2 right-2">
-               <button type="button" @click="copy" class="btn small oval primary">{{ copyButtonText }}</button>
+            <textarea class="block w-full font-mono text-base" rows="5" v-model="privateKey" disabled></textarea>
+            <div class="absolute bottom-1 right-1 bg-slate-900/90 p-2 rounded-full">
+               <button type="button" @click="copy" class="btn small oval primary">Copy</button>
             </div>
          </div>
-      </div>
-      <div v-else class="alert danger mb-5">
-         <p>{{ error }}</p>
       </div>
       <div class="grow"></div>
       <button type="button" @click="$router.back" class="btn mt-5">Close</button>

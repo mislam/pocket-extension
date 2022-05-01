@@ -8,12 +8,17 @@ import { reactive, computed, watch, onBeforeUnmount } from 'vue'
 const store = useStore()
 const balance = reactive({
    available: false,
+   uPokt: 0,
    pokt: 0,
    usd: 0,
 })
 
 const selectedWallet = computed(() => {
    return store.state.selectedWallet
+})
+
+const sendAllowed = computed(() => {
+   return balance.uPokt > Config.DEFAULT_BASE_FEE
 })
 
 const currency = (value: number): string => {
@@ -24,7 +29,8 @@ const getBalance = () => {
    Wallet.getBalance(selectedWallet.value.address).then(
       // success
       (uPokt) => {
-         balance.pokt = Number(uPokt / 1e4) / 1e2 // convert uPokt to Pokt with two decimal points
+         balance.uPokt = uPokt
+         balance.pokt = Math.floor(uPokt / 1e4) / 1e2 // convert uPokt to Pokt with two decimal points
          balance.available = true
          if (balance) {
             Cache.fetch(Config.PRICE_URL, Config.PRICE_TTL).then((data) => {
@@ -70,6 +76,10 @@ onBeforeUnmount(() => {
             <span class="leading-none mr-1">≈</span>
             <span class="text-xl leading-none">{{ currency(balance.usd) }}</span>
             <span class="ml-1 text-xs leading-none">USD</span>
+         </div>
+         <div class="grid grid-cols-2 gap-3 mt-5">
+            <router-link to="/deposit" class="btn w-full">Deposit</router-link>
+            <button type="button" @click="$router.push('/send-tx')" class="btn w-full" :disabled="!sendAllowed">Send</button>
          </div>
       </div>
    </div>

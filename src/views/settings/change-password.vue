@@ -9,10 +9,10 @@ const toast = useToast()
 const currentPassword = ref<string>('')
 const newPassword = ref<string>('')
 const confirmPassword = ref<string>('')
-const passwordInput = ref<any>(null)
 const verifyError = ref<boolean | string>(false)
 const changeError = ref<boolean | string>(false)
 
+const passwordInput = ref<any>(null)
 onMounted(() => {
    // autofocus on the input field
    passwordInput.value.focus()

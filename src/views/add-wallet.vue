@@ -65,7 +65,7 @@ const importWallet = async () => {
          <div class="flex justify-center mb-3 text-heading">Import Your Wallet</div>
          <div class="flex justify-center mb-5 text-subheading text-center">Import an existing wallet with your 128-digit private key.</div>
          <form class="grow flex flex-col" @submit.prevent="importWallet">
-            <textarea class="font-mono" rows="5" v-model="privateKeyInput" placeholder="Enter your private key"></textarea>
+            <textarea class="font-mono text-base" rows="5" v-model="privateKeyInput" placeholder="Enter your private key"></textarea>
             <div v-if="error" class="mt-3 form-error-message">{{ error }}</div>
             <div class="grow"></div>
             <div class="grid grid-cols-2 gap-3">
