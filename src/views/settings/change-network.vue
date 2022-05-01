@@ -28,6 +28,7 @@ const select = async (network: string) => {
 
 <template>
    <div class="view">
+      <button class="btn-back" @click="$router.back"></button>
       <div class="flex justify-center mb-5 text-heading">Change Network</div>
       <div class="pills">
          <div @click="select('mainnet')" :class="{ selected: selected('mainnet') }">

@@ -42,6 +42,8 @@ const copy = () => {
 
 <template>
    <div class="view">
+      <button class="btn-back" @click="$router.back"></button>
+      <div class="flex justify-center mb-5 text-heading">Private Key</div>
       <div v-if="!error">
          <div class="alert warning mb-5">
             <p class="text-sm">Never disclose your private key! Anyone with your private key can fully control your wallet, including transferring your funds.</p>

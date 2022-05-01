@@ -50,6 +50,7 @@ const change = async () => {
 
 <template>
    <div class="view flex flex-col">
+      <button class="btn-back" @click="$router.back"></button>
       <div class="flex justify-center mb-5 text-heading">Change Password</div>
       <form class="grow flex flex-col" @submit.prevent="change">
          <input type="text" class="hidden" autocomplete="username" />

@@ -58,6 +58,7 @@ const copyAddress = () => {
 
 <template>
    <div class="view flex flex-col text-sm">
+      <button class="btn-back" @click="$router.back"></button>
       <div v-if="status.available && status.error" class="alert danger">{{ status.error }}</div>
       <div v-if="status.available && status.success">
          <div class="alert success">{{ status.success }}</div>

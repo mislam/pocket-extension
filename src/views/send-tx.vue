@@ -89,6 +89,7 @@ const send = () => {
 
 <template>
    <div class="view flex flex-col">
+      <button class="btn-back" @click="$router.back"></button>
       <div class="flex justify-center mb-5 text-heading">Send POKT</div>
       <div class="flex justify-center mb-5">
          <div class="logo-circle small">

@@ -35,6 +35,8 @@ const changeWalletName = async () => {
 
 <template>
    <div class="view">
+      <button class="btn-back" @click="$router.back"></button>
+      <div class="flex justify-center mb-5 text-heading">Settings</div>
       <div class="mb-5">
          <label class="block mb-1">Change Wallet Name</label>
          <form @submit.prevent="changeWalletName">

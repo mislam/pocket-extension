@@ -28,6 +28,7 @@ generateQRCode()
 
 <template>
    <div class="view flex flex-col">
+      <button class="btn-back" @click="$router.back"></button>
       <div class="flex justify-center mb-3 text-heading">Deposit POKT</div>
       <div class="flex justify-center mb-5 text-subheading text-center">Scan or copy your wallet address.</div>
       <div class="flex justify-center">

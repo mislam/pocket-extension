@@ -87,6 +87,7 @@ const copyWalletAddress = () => {
 }
 
 const selectWallet = async (address: string) => {
+   if (address === selectedWallet.value.address) return
    await store.dispatch('selectWallet', address)
    router.push('/dashboard')
    closeMenu()
@@ -99,7 +100,7 @@ const selectWallet = async (address: string) => {
       <transition name="slide-up-fade">
          <div v-if="visible" class="flex h-12 bg-slate-900/20">
             <div class="flex-none w-12 h-12">
-               <div @click="toggleMenu" class="w-full h-full p-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300">
+               <div @click="toggleMenu" class="w-full h-full p-3.5 text-white/40 hover:cursor-pointer hover:text-white/80">
                   <svg width="20" height="20" viewBox="0 0 20 20" class="fill-current transition-colors" xmlns="http://www.w3.org/2000/svg">
                      <rect y="3" width="20" height="2" />
                      <rect y="15" width="20" height="2" />
@@ -112,7 +113,7 @@ const selectWallet = async (address: string) => {
                <div @click="copyWalletAddress" class="text-white/60 pl-2 font-mono cursor-pointer hover:text-blue-400 transition-colors">({{ selectedWallet.shortAddress }})</div>
             </div>
             <div class="flex-none w-12 h-12">
-               <router-link to="/settings/change-network" class="block w-full h-full p-3.5 text-slate-500 hover:cursor-pointer hover:text-slate-300" :title="network">
+               <router-link to="/settings/change-network" class="block w-full h-full p-3.5 text-white/40 hover:cursor-pointer hover:text-white/80" :title="network">
                   <svg width="20" height="20" viewBox="0 0 20 20" class="fill-current transition-colors" xmlns="http://www.w3.org/2000/svg">
                      <path
                         v-if="mainnet"
@@ -225,20 +226,18 @@ const selectWallet = async (address: string) => {
    @apply transition-colors;
 }
 
+.wallet-list dl.selected dt,
 .wallet-list dl:hover dt {
    @apply text-blue-400;
 }
 
+.wallet-list dl.selected dd,
 .wallet-list dl:hover dd {
    @apply text-blue-400/60;
 }
 
-.wallet-list dd {
-   @apply grow text-white/40 font-mono pl-1 pr-2;
-}
-
 .wallet-list dl.selected:after {
-   @apply block bg-white/90 mb-0.5;
+   @apply block bg-white/80 mb-1;
    content: '';
    width: 15px;
    height: 12px;

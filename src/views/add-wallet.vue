@@ -39,6 +39,7 @@ const importWallet = async () => {
 
 <template>
    <div class="view flex flex-col">
+      <button class="btn-back" @click="$router.back"></button>
       <!-- Create -->
       <div class="grow flex flex-col" v-if="'create' === method">
          <div class="flex justify-center mb-5 text-heading">Add Wallet</div>
