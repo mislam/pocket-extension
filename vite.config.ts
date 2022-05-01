@@ -25,7 +25,7 @@ export default defineConfig({
    resolve: {
       alias: {
          '@': resolve(__dirname, 'src'),
-         '@pocketjs': resolve(__dirname, 'packages/pocketjs'),
+         '@packages': resolve(__dirname, 'packages'),
       },
    },
 })

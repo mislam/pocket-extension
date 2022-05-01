@@ -73,8 +73,7 @@ onBeforeUnmount(() => {
             <span class="ml-1 leading-none">POKT</span>
          </div>
          <div class="flex justify-center items-center mt-2 text-white/60">
-            <span class="leading-none mr-1">≈</span>
-            <span class="text-xl leading-none">{{ currency(balance.usd) }}</span>
+            <span class="text-xl leading-none">${{ currency(balance.usd) }}</span>
             <span class="ml-1 text-xs leading-none">USD</span>
          </div>
          <div class="grid grid-cols-2 gap-3 mt-5">
