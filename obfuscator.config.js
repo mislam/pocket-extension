@@ -5,8 +5,6 @@ export default {
    debugProtection: false,
    debugProtectionInterval: 0,
    disableConsoleOutput: false,
-   domainLock: ['chrome-extension://gpjflkmlalombpppohbbogaaocbnbach'],
-   domainLockRedirectUrl: 'about:blank',
    identifierNamesGenerator: 'mangled-shuffled',
    log: false,
    numbersToExpressions: false,

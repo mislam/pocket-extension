@@ -15,7 +15,7 @@ interface Wallet {
 }
 
 const init = async () => {
-   encryptionPassword = await sha256(Config.STORAGE_ENCRYPTION_KEY)
+   encryptionPassword = await sha256(Config.ENCRYPTION_KEY)
 }
 
 const validatePassword = (

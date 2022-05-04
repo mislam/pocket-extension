@@ -2,8 +2,8 @@
    "private": true,
    "scripts": {
       "dev": "vite",
-      "build": "vue-tsc --noEmit && vite build",
-      "preview": "vite preview"
+      "build:staging": "vue-tsc --noEmit && vite build --mode staging",
+      "build:production": "vue-tsc --noEmit && vite build --mode production"
    },
    "dependencies": {
       "@pokt-network/amino-js": "^0.7.5-alpha.1",

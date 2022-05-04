@@ -1,5 +1,6 @@
 const keys: any = {
-   STORAGE_ENCRYPTION_KEY: String,
+   ENCRYPTED_EXTENSION_ID: String,
+   ENCRYPTION_KEY: String,
    MAINNET_RPC_URL: String,
    TESTNET_RPC_URL: String,
    PRICE_URL: String,

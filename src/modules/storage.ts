@@ -6,7 +6,7 @@ let encryptionPassword = '' // this is going to be populated in init()
 const storageKey = '_' // the key to be used in the key-value pair in storage
 
 const init = async (state: object) => {
-   encryptionPassword = await sha256(Config.STORAGE_ENCRYPTION_KEY)
+   encryptionPassword = await sha256(Config.ENCRYPTION_KEY)
    data = new Map(Object.entries(state))
    let encryptedData
    if ('storage' in chrome) {
