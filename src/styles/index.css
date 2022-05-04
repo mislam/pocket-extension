@@ -19,6 +19,12 @@ body {
    font-size: 100%;
 }
 
+body,
+.app {
+   width: 360px;
+   height: 540px;
+}
+
 label {
    @apply text-slate-300 text-sm;
 }
@@ -145,8 +151,6 @@ input[type='password']::placeholder {
 
 .app {
    @apply relative flex flex-col;
-   width: 360px;
-   height: 540px;
 }
 
 .view {
