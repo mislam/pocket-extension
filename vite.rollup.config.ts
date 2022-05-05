@@ -42,7 +42,6 @@ const keywords = [
    'PRICE_URL',
    'BALANCE_TTL',
    'PRICE_TTL',
-   'DEFAULT_BASE_FEE',
    'TX_CONF_ETA',
 ]
 config.replace = {

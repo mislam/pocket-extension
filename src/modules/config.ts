@@ -1,3 +1,5 @@
+import { DEFAULT_BASE_FEE } from '@packages/pocketjs/transaction-builder'
+
 const Config: any = {
    ENCRYPTED_EXTENSION_ID: import.meta.env._ENCRYPTED_EXTENSION_ID,
    ENCRYPTION_KEY: import.meta.env._ENCRYPTION_KEY,
@@ -6,8 +8,8 @@ const Config: any = {
    PRICE_URL: import.meta.env._PRICE_URL,
    BALANCE_TTL: Number(import.meta.env._BALANCE_TTL),
    PRICE_TTL: Number(import.meta.env._PRICE_TTL),
-   DEFAULT_BASE_FEE: Number(import.meta.env._DEFAULT_BASE_FEE),
    TX_CONF_ETA: Number(import.meta.env._TX_CONF_ETA),
+   DEFAULT_BASE_FEE,
 }
 
 Config.getRpcUrl = (network: string): string => {
